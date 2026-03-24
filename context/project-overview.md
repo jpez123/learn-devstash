@@ -674,6 +674,13 @@ devstash/
 └── middleware.ts                # Auth protection
 ```
 
+## Screenshots
+
+Refer to the screenshoots below as a base for the dashbaord UI. It does not have to be exact. Use it as a reference.
+
+- @context/screenshots/dashboard-ui-main.png
+- @context/screenshots/dashboard-ui-drawer.png
+
 ---
 
 ## Useful Links
