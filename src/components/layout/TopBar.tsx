@@ -1,12 +1,24 @@
-import { Search, Plus, Package } from "lucide-react";
+'use client';
+
+import { Search, Plus, Package, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSidebar } from "./SidebarProvider";
 
 export default function TopBar() {
+  const { toggleMobile } = useSidebar();
+
   return (
     <header className="flex h-14 shrink-0 items-center border-b border-border px-4 gap-4">
-      {/* Left: Logo + name */}
+      {/* Left: hamburger (mobile only) + Logo + name */}
       <div className="flex items-center gap-2 w-48 shrink-0">
+        <button
+          onClick={toggleMobile}
+          className="md:hidden text-muted-foreground hover:text-foreground p-1"
+          aria-label="Open navigation"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
         <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
           <Package className="h-4 w-4 text-primary-foreground" />
         </div>
