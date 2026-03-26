@@ -2,40 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link as LinkIcon,
-  File,
-  Image,
-  Star,
-  Settings,
-  X,
-  PanelLeft,
-  ChevronDown,
-  type LucideProps,
-} from 'lucide-react';
+import { Star, Settings, X, PanelLeft, ChevronDown } from 'lucide-react';
 import { mockItemTypes, mockCollections, mockItemTypeCounts, mockUser } from '@/lib/mock-data';
 import { useSidebar } from './SidebarProvider';
-
-type IconComponent = React.ComponentType<LucideProps>;
-
-const ICON_MAP: Record<string, IconComponent> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  Link: LinkIcon,
-  File,
-  Image,
-};
-
-function TypeIcon({ iconName, color }: { iconName: string; color: string }) {
-  const Icon = ICON_MAP[iconName] ?? File;
-  return <Icon size={15} style={{ color }} />;
-}
+import TypeIcon from '@/components/ui/TypeIcon';
 
 function UserAvatar({ name }: { name: string }) {
   const initials = name
@@ -84,7 +54,7 @@ function SidebarInner({ collapsed }: { collapsed: boolean }) {
                 className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 title={collapsed ? `${type.name}s` : undefined}
               >
-                <TypeIcon iconName={type.icon} color={type.color} />
+                <TypeIcon iconName={type.icon} color={type.color} size={15} />
                 {!collapsed && (
                   <>
                     <span className="flex-1">{type.name}s</span>
