@@ -1,30 +1,18 @@
 # Current Feature
 
-Seed Script — Populate the database with sample data for development and demos.
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+Completed
 
 ## Goals
 
-Create `prisma/seed.ts` that populates the database with realistic sample data:
-
-- **Demo user**: `demo@devstash.io` / `Demo User` / password `12345678` (bcryptjs, 12 rounds), `isPro: false`, `emailVerified: now`
-- **System item types**: snippet, prompt, command, note, file, image, link (with correct icons/colors, `isSystem: true`)
-- **Collections & items**:
-  - **React Patterns** — 3 TypeScript snippets (custom hooks, component patterns, utility functions)
-  - **AI Workflows** — 3 prompts (code review, documentation generation, refactoring assistance)
-  - **DevOps** — 1 snippet (Docker/CI-CD config), 1 command (deployment scripts), 2 links (real docs URLs)
-  - **Terminal Commands** — 4 commands (git ops, docker, process management, package manager utilities)
-  - **Design Resources** — 4 links (real URLs: CSS/Tailwind refs, component libs, design systems, icon libs)
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Use `upsert` or `deleteMany` + `create` to make the script idempotent (safe to re-run)
-- Wire up in `package.json` via `prisma.seed` field: `"seed": "tsx prisma/seed.ts"`
-- System item types are already partially seeded — the script should handle that gracefully (upsert by name)
-- Use real, working URLs for links
+<!-- Any extra notes -->
 
 ## History
 
@@ -35,3 +23,4 @@ Create `prisma/seed.ts` that populates the database with realistic sample data:
 - **2026-03-25** — Completed Dashboard UI Phase 2: Collapsible sidebar with icon-only mode, item type links, collapsible Types/Collections sections, favorite collections, all collections, user avatar area, mobile drawer with slide animation, sidebar toggle inside sidebar, mobile hamburger in top bar
 - **2026-03-25** — Completed Dashboard UI Phase 3: Stats cards, recent collections grid, pinned items section, recent items list; extracted StatsCard, CollectionCard, ItemRow, and shared TypeIcon components
 - **2026-03-26** — Completed Prisma 7 + Neon PostgreSQL setup: full schema with all models and indexes, two migrations (init + ItemType unique constraint), seeded 7 system item types, Prisma client singleton with PrismaPg adapter, prisma.config.ts, db scripts
+- **2026-03-26** — Completed seed script: demo user (demo@devstash.io), all 7 system item types upserted, 5 collections with 15 items (snippets, prompts, commands, links); installed bcryptjs + tsx, wired prisma.seed in package.json; script is idempotent
