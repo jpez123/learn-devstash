@@ -1,13 +1,10 @@
 import Link from 'next/link';
 import { Star } from 'lucide-react';
-import { mockCollections, mockItemTypes } from '@/lib/mock-data';
 import TypeIcon from '@/components/ui/TypeIcon';
+import type { CollectionWithMeta } from '@/lib/db/collections';
 
-type MockCollection = (typeof mockCollections)[number];
-
-export default function CollectionCard({ col }: { col: MockCollection }) {
-  const type = mockItemTypes.find((t) => t.id === col.dominantTypeId);
-  const dominantColor = type?.color ?? '#6b7280';
+export default function CollectionCard({ col }: { col: CollectionWithMeta }) {
+  const dominantColor = col.dominantType?.color ?? '#6b7280';
 
   return (
     <Link
@@ -23,9 +20,11 @@ export default function CollectionCard({ col }: { col: MockCollection }) {
       {col.description && (
         <p className="line-clamp-2 text-xs text-muted-foreground/80">{col.description}</p>
       )}
-      {type && (
-        <div className="mt-auto pt-1">
-          <TypeIcon iconName={type.icon} color={type.color} size={14} />
+      {col.types.length > 0 && (
+        <div className="mt-auto flex items-center gap-1.5 pt-1">
+          {col.types.map((t, i) => (
+            <TypeIcon key={i} iconName={t.icon} color={t.color} size={14} />
+          ))}
         </div>
       )}
     </Link>

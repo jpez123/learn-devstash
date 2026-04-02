@@ -1,15 +1,30 @@
 import Link from 'next/link';
 import { Package, FolderOpen, Star, Heart, Pin } from 'lucide-react';
-import { mockCollections, mockItems, mockItemTypeCounts } from '@/lib/mock-data';
+import { mockItems, mockItemTypeCounts } from '@/lib/mock-data';
+import { prisma } from '@/lib/prisma';
+import { getRecentCollections } from '@/lib/db/collections';
 import StatsCard from '@/components/dashboard/StatsCard';
 import CollectionCard from '@/components/collections/CollectionCard';
 import ItemRow from '@/components/items/ItemRow';
 
-export default function DashboardPage() {
-  const totalItems = Object.values(mockItemTypeCounts).reduce((a, b) => a + b, 0);
-  const totalCollections = mockCollections.length;
-  const favoriteItems = mockItems.filter((i) => i.isFavorite).length;
-  const favoriteCollections = mockCollections.filter((c) => c.isFavorite).length;
+const DEMO_EMAIL = 'demo@devstash.io';
+
+export default async function DashboardPage() {
+  const demoUser = await prisma.user.findUnique({ where: { email: DEMO_EMAIL } });
+
+  const [collections, totalItems, favoriteItems] = demoUser
+    ? await Promise.all([
+        getRecentCollections(demoUser.id),
+        prisma.item.count({ where: { userId: demoUser.id } }),
+        prisma.item.count({ where: { userId: demoUser.id, isFavorite: true } }),
+      ])
+    : [[], Object.values(mockItemTypeCounts).reduce((a, b) => a + b, 0), 0];
+
+  const totalCollections = demoUser
+    ? await prisma.collection.count({ where: { userId: demoUser.id } })
+    : 0;
+
+  const favoriteCollections = collections.filter((c) => c.isFavorite).length;
 
   const pinnedItems = mockItems.filter((i) => i.isPinned);
   const recentItems = [...mockItems]
@@ -41,7 +56,7 @@ export default function DashboardPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {mockCollections.map((col) => (
+          {collections.map((col) => (
             <CollectionCard key={col.id} col={col} />
           ))}
         </div>
