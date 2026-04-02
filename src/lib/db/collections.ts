@@ -1,5 +1,54 @@
 import { prisma } from '@/lib/prisma';
 
+export type SidebarCollection = {
+  id: string;
+  name: string;
+  dominantType: { color: string } | null;
+};
+
+export async function getSidebarCollections(userId: string): Promise<{
+  favorites: SidebarCollection[];
+  recents: SidebarCollection[];
+}> {
+  const collections = await prisma.collection.findMany({
+    where: { userId },
+    include: {
+      items: {
+        include: {
+          item: {
+            select: {
+              itemType: { select: { id: true, color: true } },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { updatedAt: 'desc' },
+  });
+
+  const withDominant = collections.map((col) => {
+    const typeCounts = new Map<string, { color: string; count: number }>();
+    for (const ic of col.items) {
+      const t = ic.item.itemType;
+      const existing = typeCounts.get(t.id);
+      if (existing) existing.count++;
+      else typeCounts.set(t.id, { color: t.color, count: 1 });
+    }
+    const sorted = [...typeCounts.values()].sort((a, b) => b.count - a.count);
+    return {
+      id: col.id,
+      name: col.name,
+      isFavorite: col.isFavorite,
+      dominantType: sorted[0] ? { color: sorted[0].color } : null,
+    };
+  });
+
+  return {
+    favorites: withDominant.filter((c) => c.isFavorite),
+    recents: withDominant.slice(0, 4),
+  };
+}
+
 export type CollectionWithMeta = {
   id: string;
   name: string;

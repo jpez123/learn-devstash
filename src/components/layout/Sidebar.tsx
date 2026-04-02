@@ -2,10 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Star, Settings, X, PanelLeft, ChevronDown } from 'lucide-react';
-import { mockItemTypes, mockCollections, mockItemTypeCounts, mockUser } from '@/lib/mock-data';
+import { Heart, Settings, X, PanelLeft, ChevronDown } from 'lucide-react';
 import { useSidebar } from './SidebarProvider';
 import TypeIcon from '@/components/ui/TypeIcon';
+import type { ItemTypeWithCount } from '@/lib/db/items';
+import type { SidebarCollection } from '@/lib/db/collections';
+
+type SidebarProps = {
+  itemTypes: ItemTypeWithCount[];
+  sidebarCollections: { favorites: SidebarCollection[]; recents: SidebarCollection[] };
+  user: { name: string; email: string };
+};
 
 function UserAvatar({ name }: { name: string }) {
   const initials = name
@@ -19,12 +26,14 @@ function UserAvatar({ name }: { name: string }) {
   );
 }
 
-function SidebarInner({ collapsed }: { collapsed: boolean }) {
+function SidebarInner({
+  collapsed,
+  itemTypes,
+  sidebarCollections,
+  user,
+}: { collapsed: boolean } & SidebarProps) {
   const [typesOpen, setTypesOpen] = useState(true);
   const [collectionsOpen, setCollectionsOpen] = useState(true);
-
-  const favoriteCollections = mockCollections.filter((c) => c.isFavorite);
-  const recentCollections = mockCollections.filter((c) => !c.isFavorite).slice(0, 3);
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -43,28 +52,27 @@ function SidebarInner({ collapsed }: { collapsed: boolean }) {
           </button>
         )}
         {(collapsed || typesOpen) && (
-        <nav className="space-y-0.5">
-          {mockItemTypes.map((type) => {
-            const count = mockItemTypeCounts[type.id] ?? 0;
-            const slug = type.name.toLowerCase() + 's';
-            return (
-              <Link
-                key={type.id}
-                href={`/items/${slug}`}
-                className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                title={collapsed ? `${type.name}s` : undefined}
-              >
-                <TypeIcon iconName={type.icon} color={type.color} size={15} />
-                {!collapsed && (
-                  <>
-                    <span className="flex-1">{type.name}s</span>
-                    <span className="text-xs text-muted-foreground">{count}</span>
-                  </>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+          <nav className="space-y-0.5">
+            {itemTypes.map((type) => {
+              const slug = type.name.toLowerCase() + 's';
+              return (
+                <Link
+                  key={type.id}
+                  href={`/items/${slug}`}
+                  className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  title={collapsed ? `${type.name.charAt(0).toUpperCase() + type.name.slice(1)}s` : undefined}
+                >
+                  <TypeIcon iconName={type.icon} color={type.color} size={15} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1">{type.name.charAt(0).toUpperCase() + type.name.slice(1)}s</span>
+                      <span className="text-xs text-muted-foreground">{type.count}</span>
+                    </>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
         )}
       </div>
 
@@ -73,7 +81,6 @@ function SidebarInner({ collapsed }: { collapsed: boolean }) {
         <>
           <div className="mx-3 border-t border-border" />
           <div className="flex-1 overflow-y-auto px-2 py-3">
-            {/* Collapsible Collections heading */}
             <button
               onClick={() => setCollectionsOpen((prev) => !prev)}
               className="mb-1 flex w-full items-center gap-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
@@ -88,34 +95,55 @@ function SidebarInner({ collapsed }: { collapsed: boolean }) {
             {collectionsOpen && (
               <>
                 {/* Favorites */}
-                <p className="mb-1 mt-2 px-2 text-[11px] text-muted-foreground">Favorites</p>
-                <nav className="space-y-0.5">
-                  {favoriteCollections.map((col) => (
-                    <Link
-                      key={col.id}
-                      href={`/collections/${col.id}`}
-                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                    >
-                      <span className="flex-1 truncate">{col.name}</span>
-                      <Star size={11} className="shrink-0 fill-yellow-400 text-yellow-400" />
-                    </Link>
-                  ))}
-                </nav>
+                {sidebarCollections.favorites.length > 0 && (
+                  <>
+                    <p className="mb-1 mt-2 px-2 text-[11px] text-muted-foreground">Favorites</p>
+                    <nav className="space-y-0.5">
+                      {sidebarCollections.favorites.map((col) => (
+                        <Link
+                          key={col.id}
+                          href={`/collections/${col.id}`}
+                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        >
+                          <span className="flex-1 truncate">{col.name}</span>
+                          <Heart size={11} className="shrink-0 fill-pink-400 text-pink-400" />
+                        </Link>
+                      ))}
+                    </nav>
+                  </>
+                )}
 
-                {/* All Collections */}
-                <p className="mb-1 mt-3 px-2 text-[11px] text-muted-foreground">All Collections</p>
-                <nav className="space-y-0.5">
-                  {recentCollections.map((col) => (
-                    <Link
-                      key={col.id}
-                      href={`/collections/${col.id}`}
-                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                    >
-                      <span className="flex-1 truncate">{col.name}</span>
-                      <span className="text-xs text-muted-foreground">{col.itemCount}</span>
-                    </Link>
-                  ))}
-                </nav>
+                {/* Recent Collections */}
+                {sidebarCollections.recents.length > 0 && (
+                  <>
+                    <p className="mb-1 mt-3 px-2 text-[11px] text-muted-foreground">Recent</p>
+                    <nav className="space-y-0.5">
+                      {sidebarCollections.recents.map((col) => (
+                        <Link
+                          key={col.id}
+                          href={`/collections/${col.id}`}
+                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        >
+                          {col.dominantType && (
+                            <span
+                              className="h-2 w-2 shrink-0 rounded-full"
+                              style={{ backgroundColor: col.dominantType.color }}
+                            />
+                          )}
+                          <span className="flex-1 truncate">{col.name}</span>
+                        </Link>
+                      ))}
+                    </nav>
+                  </>
+                )}
+
+                {/* View all collections */}
+                <Link
+                  href="/collections"
+                  className="mt-2 flex w-full items-center rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  View all collections →
+                </Link>
               </>
             )}
           </div>
@@ -126,14 +154,14 @@ function SidebarInner({ collapsed }: { collapsed: boolean }) {
       <div className="mt-auto border-t border-border p-3">
         {collapsed ? (
           <div className="flex justify-center">
-            <UserAvatar name={mockUser.name} />
+            <UserAvatar name={user.name} />
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <UserAvatar name={mockUser.name} />
+            <UserAvatar name={user.name} />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{mockUser.name}</p>
-              <p className="truncate text-xs text-muted-foreground">{mockUser.email}</p>
+              <p className="truncate text-sm font-medium">{user.name}</p>
+              <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             </div>
             <button className="shrink-0 text-muted-foreground hover:text-foreground">
               <Settings size={14} />
@@ -145,7 +173,7 @@ function SidebarInner({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-export default function Sidebar() {
+export default function Sidebar({ itemTypes, sidebarCollections, user }: SidebarProps) {
   const { isCollapsed, isMobileOpen, closeMobile, toggleCollapsed } = useSidebar();
 
   return (
@@ -170,7 +198,12 @@ export default function Sidebar() {
             <PanelLeft size={15} className={`transition-transform duration-200 ${isCollapsed ? 'rotate-180' : ''}`} />
           </button>
         </div>
-        <SidebarInner collapsed={isCollapsed} />
+        <SidebarInner
+          collapsed={isCollapsed}
+          itemTypes={itemTypes}
+          sidebarCollections={sidebarCollections}
+          user={user}
+        />
       </aside>
 
       {/* Mobile drawer */}
@@ -192,7 +225,12 @@ export default function Sidebar() {
           </button>
         </div>
         <div className="flex-1 overflow-hidden">
-          <SidebarInner collapsed={false} />
+          <SidebarInner
+            collapsed={false}
+            itemTypes={itemTypes}
+            sidebarCollections={sidebarCollections}
+            user={user}
+          />
         </div>
       </aside>
     </>

@@ -1,5 +1,41 @@
 import { prisma } from '@/lib/prisma';
 
+export type ItemTypeWithCount = {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  count: number;
+};
+
+const TYPE_ORDER = ['snippet', 'prompt', 'command', 'note', 'file', 'image', 'link'];
+
+export async function getItemTypesWithCounts(userId: string): Promise<ItemTypeWithCount[]> {
+  const types = await prisma.itemType.findMany({
+    where: { isSystem: true },
+    include: {
+      items: {
+        where: { userId },
+        select: { id: true },
+      },
+    },
+  });
+
+  const mapped = types.map((t) => ({
+    id: t.id,
+    name: t.name,
+    icon: t.icon,
+    color: t.color,
+    count: t.items.length,
+  }));
+
+  return mapped.sort((a, b) => {
+    const ai = TYPE_ORDER.indexOf(a.name);
+    const bi = TYPE_ORDER.indexOf(b.name);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
+}
+
 export type ItemWithMeta = {
   id: string;
   title: string;
