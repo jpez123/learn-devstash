@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { Package, FolderOpen, Star, Heart, Pin } from 'lucide-react';
-import { mockItems, mockItemTypeCounts } from '@/lib/mock-data';
 import { prisma } from '@/lib/prisma';
 import { getRecentCollections } from '@/lib/db/collections';
+import { getPinnedItems, getRecentItems } from '@/lib/db/items';
 import StatsCard from '@/components/dashboard/StatsCard';
 import CollectionCard from '@/components/collections/CollectionCard';
 import ItemRow from '@/components/items/ItemRow';
@@ -12,24 +12,18 @@ const DEMO_EMAIL = 'demo@devstash.io';
 export default async function DashboardPage() {
   const demoUser = await prisma.user.findUnique({ where: { email: DEMO_EMAIL } });
 
-  const [collections, totalItems, favoriteItems] = demoUser
+  const [collections, totalItems, favoriteItems, totalCollections, pinnedItems, recentItems] = demoUser
     ? await Promise.all([
         getRecentCollections(demoUser.id),
         prisma.item.count({ where: { userId: demoUser.id } }),
         prisma.item.count({ where: { userId: demoUser.id, isFavorite: true } }),
+        prisma.collection.count({ where: { userId: demoUser.id } }),
+        getPinnedItems(demoUser.id),
+        getRecentItems(demoUser.id),
       ])
-    : [[], Object.values(mockItemTypeCounts).reduce((a, b) => a + b, 0), 0];
-
-  const totalCollections = demoUser
-    ? await prisma.collection.count({ where: { userId: demoUser.id } })
-    : 0;
+    : [[], 0, 0, 0, [], []];
 
   const favoriteCollections = collections.filter((c) => c.isFavorite).length;
-
-  const pinnedItems = mockItems.filter((i) => i.isPinned);
-  const recentItems = [...mockItems]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 10);
 
   return (
     <div className="space-y-8">

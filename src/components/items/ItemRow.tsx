@@ -1,37 +1,33 @@
 import { Star } from 'lucide-react';
-import { mockItems, mockItemTypes } from '@/lib/mock-data';
 import TypeIcon from '@/components/ui/TypeIcon';
+import { ItemWithMeta } from '@/lib/db/items';
 
-type MockItem = (typeof mockItems)[number];
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-export default function ItemRow({ item }: { item: MockItem }) {
-  const type = mockItemTypes.find((t) => t.id === item.itemTypeId);
+export default function ItemRow({ item }: { item: ItemWithMeta }) {
+  const { itemType } = item;
 
   return (
     <div className="flex cursor-pointer items-center gap-3 bg-card px-4 py-3 transition-colors hover:bg-accent/50">
       <div
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
-        style={{ backgroundColor: type ? `${type.color}25` : undefined }}
+        style={{ backgroundColor: `${itemType.color}25` }}
       >
-        {type && <TypeIcon iconName={type.icon} color={type.color} size={15} />}
+        <TypeIcon iconName={itemType.icon} color={itemType.color} size={15} />
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="truncate text-sm font-medium text-foreground">{item.title}</span>
           {item.isFavorite && <Star size={12} className="shrink-0 fill-yellow-400 text-yellow-400" />}
-          {type && (
-            <span
-              className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium"
-              style={{ backgroundColor: `${type.color}25`, color: type.color }}
-            >
-              {type.name}
-            </span>
-          )}
+          <span
+            className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium"
+            style={{ backgroundColor: `${itemType.color}25`, color: itemType.color }}
+          >
+            {itemType.name}
+          </span>
         </div>
         {item.description && (
           <p className="mt-0.5 truncate text-xs text-muted-foreground">{item.description}</p>
