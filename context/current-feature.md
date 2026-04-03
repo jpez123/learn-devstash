@@ -1,20 +1,18 @@
-# Current Feature: Add Pro Badge to Sidebar
+# Current Feature
+
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- In Progress | Completed -->
 
 ## Goals
 
-- Add a PRO badge to the File and Image item types in the sidebar
-- Use ShadCN UI Badge component
-- Badge should be clean and subtle
-- "PRO" text must be uppercase
+<!-- Goals and requirements -->
 
 ## Notes
 
-- Only File and Image types are Pro-only (per project spec)
-- Badge should not be visually noisy — keep it minimal
+<!-- Any extra notes -->
 
 ## History
 
@@ -29,3 +27,4 @@ In Progress
 - **2026-04-01** — Completed Dashboard Collections: created src/lib/db/collections.ts with getRecentCollections (dominant type + all types per collection), updated CollectionCard to use DB type and show all type icons, updated dashboard page to async server component fetching real collections and stats from Neon via Prisma demo user
 - **2026-04-01** — Completed Dashboard Items: created src/lib/db/items.ts with getPinnedItems and getRecentItems, updated ItemRow to use DB ItemWithMeta type, replaced all mock item data in dashboard page with real Neon/Prisma data, pinned section hidden when empty, favorite icon on CollectionCard changed from star to heart for consistency
 - **2026-04-01** — Completed Stats & Sidebar: added getItemTypesWithCounts to items.ts (system types with per-user counts, ordered: snippets/prompts/commands/notes/files/images/links), added getSidebarCollections to collections.ts (favorites + 4 most recent), updated dashboard layout to async server component passing sidebar data as props, replaced all mock-data usage in Sidebar with real DB data; recents show colored circle based on dominant item type, favorites show heart icon, added "View all collections" link
+- **2026-04-02** — Completed Pro Badge in Sidebar: installed ShadCN Badge component, added subtle outline PRO badge next to File and Image type names in the sidebar (Pro-only types); item counts preserved for all types
