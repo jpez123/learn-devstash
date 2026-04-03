@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Heart, Settings, X, PanelLeft, ChevronDown } from 'lucide-react';
 import { useSidebar } from './SidebarProvider';
 import TypeIcon from '@/components/ui/TypeIcon';
+import { Badge } from '@/components/ui/badge';
 import type { ItemTypeWithCount } from '@/lib/db/items';
 import type { SidebarCollection } from '@/lib/db/collections';
 
@@ -65,8 +66,13 @@ function SidebarInner({
                   <TypeIcon iconName={type.icon} color={type.color} size={15} />
                   {!collapsed && (
                     <>
-                      <span className="flex-1">{type.name.charAt(0).toUpperCase() + type.name.slice(1)}s</span>
-                      <span className="text-xs text-muted-foreground">{type.count}</span>
+                      <span>{type.name.charAt(0).toUpperCase() + type.name.slice(1)}s</span>
+                      {(type.name === 'file' || type.name === 'image') && (
+                        <Badge variant="outline" className="h-4 rounded px-1 text-[9px] font-semibold leading-none text-muted-foreground">
+                          PRO
+                        </Badge>
+                      )}
+                      <span className="ml-auto text-xs text-muted-foreground">{type.count}</span>
                     </>
                   )}
                 </Link>
