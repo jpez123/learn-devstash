@@ -1,0 +1,1 @@
+- [DevStash Architecture Overview](project_architecture.md) — Auth not yet wired up; DEMO_EMAIL pattern is intentional dev scaffolding; no API routes or actions yet
