@@ -1,27 +1,25 @@
 import Link from 'next/link';
 import { Package, FolderOpen, Star, Heart, Pin } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
+import { getDemoUser } from '@/lib/db/user';
 import { getRecentCollections } from '@/lib/db/collections';
 import { getPinnedItems, getRecentItems } from '@/lib/db/items';
 import StatsCard from '@/components/dashboard/StatsCard';
 import CollectionCard from '@/components/collections/CollectionCard';
 import ItemRow from '@/components/items/ItemRow';
 
-const DEMO_EMAIL = 'demo@devstash.io';
-
 export default async function DashboardPage() {
-  const demoUser = await prisma.user.findUnique({ where: { email: DEMO_EMAIL } });
+  const demoUser = await getDemoUser();
 
-  const [collections, totalItems, favoriteItems, totalCollections, pinnedItems, recentItems] = demoUser
-    ? await Promise.all([
-        getRecentCollections(demoUser.id),
-        prisma.item.count({ where: { userId: demoUser.id } }),
-        prisma.item.count({ where: { userId: demoUser.id, isFavorite: true } }),
-        prisma.collection.count({ where: { userId: demoUser.id } }),
-        getPinnedItems(demoUser.id),
-        getRecentItems(demoUser.id),
-      ])
-    : [[], 0, 0, 0, [], []];
+  const [collections, totalItems, favoriteItems, totalCollections, pinnedItems, recentItems] =
+    await Promise.all([
+      getRecentCollections(demoUser.id),
+      prisma.item.count({ where: { userId: demoUser.id } }),
+      prisma.item.count({ where: { userId: demoUser.id, isFavorite: true } }),
+      prisma.collection.count({ where: { userId: demoUser.id } }),
+      getPinnedItems(demoUser.id),
+      getRecentItems(demoUser.id),
+    ]);
 
   const favoriteCollections = collections.filter((c) => c.isFavorite).length;
 

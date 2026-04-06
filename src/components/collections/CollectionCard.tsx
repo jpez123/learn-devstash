@@ -22,8 +22,8 @@ export default function CollectionCard({ col }: { col: CollectionWithMeta }) {
       )}
       {col.types.length > 0 && (
         <div className="mt-auto flex items-center gap-1.5 pt-1">
-          {col.types.map((t, i) => (
-            <TypeIcon key={i} iconName={t.icon} color={t.color} size={14} />
+          {col.types.map((t) => (
+            <TypeIcon key={t.icon} iconName={t.icon} color={t.color} size={14} />
           ))}
         </div>
       )}

@@ -1,29 +1,23 @@
-import { prisma } from '@/lib/prisma';
+import { getDemoUser } from '@/lib/db/user';
 import { getItemTypesWithCounts } from '@/lib/db/items';
 import { getSidebarCollections } from '@/lib/db/collections';
 import TopBar from '@/components/layout/TopBar';
 import Sidebar from '@/components/layout/Sidebar';
 import { SidebarProvider } from '@/components/layout/SidebarProvider';
 
-const DEMO_EMAIL = 'demo@devstash.io';
-
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const demoUser = await prisma.user.findUnique({ where: { email: DEMO_EMAIL } });
+  const demoUser = await getDemoUser();
 
-  const [itemTypes, sidebarCollections] = demoUser
-    ? await Promise.all([
-        getItemTypesWithCounts(demoUser.id),
-        getSidebarCollections(demoUser.id),
-      ])
-    : [[], { favorites: [], recents: [] }];
+  const [itemTypes, sidebarCollections] = await Promise.all([
+    getItemTypesWithCounts(demoUser.id),
+    getSidebarCollections(demoUser.id),
+  ]);
 
-  const user = demoUser
-    ? { name: demoUser.name ?? 'User', email: demoUser.email ?? '' }
-    : { name: 'User', email: '' };
+  const user = { name: demoUser.name ?? 'User', email: demoUser.email ?? '' };
 
   return (
     <SidebarProvider>

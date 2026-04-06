@@ -1,18 +1,21 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Code Quality Quick Wins — low-risk cleanup items identified during the 2026-04-05 code audit.
 
 ## Status
 
-<!-- In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+1. Fix React key in `CollectionCard` — replace array index key with stable `t.icon` key
+2. Guard against empty `name` in `UserAvatar` — prevent `undefined` initials from double-space split
+3. Remove dead `toggle` function in `SidebarProvider` — never called; `toggleCollapsed`/`toggleMobile` are used directly
+4. Add dev-mode warning in `TypeIcon` — silent fallback to `File` icon for unknown icon names is hard to debug
 
 ## Notes
 
-<!-- Any extra notes -->
+All changes are purely cosmetic / defensive. No DB changes, no new deps, no API changes. Safe to implement and commit in one pass.
 
 ## History
 
