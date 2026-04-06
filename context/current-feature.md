@@ -1,21 +1,18 @@
 # Current Feature
 
-Code Quality Quick Wins — low-risk cleanup items identified during the 2026-04-05 code audit.
+<!-- Feature name and short description -->
 
 ## Status
 
-In Progress
+<!-- In Progress | Completed -->
 
 ## Goals
 
-1. Fix React key in `CollectionCard` — replace array index key with stable `t.icon` key
-2. Guard against empty `name` in `UserAvatar` — prevent `undefined` initials from double-space split
-3. Remove dead `toggle` function in `SidebarProvider` — never called; `toggleCollapsed`/`toggleMobile` are used directly
-4. Add dev-mode warning in `TypeIcon` — silent fallback to `File` icon for unknown icon names is hard to debug
+<!-- Goals and requirements -->
 
 ## Notes
 
-All changes are purely cosmetic / defensive. No DB changes, no new deps, no API changes. Safe to implement and commit in one pass.
+<!-- Any extra notes -->
 
 ## History
 
@@ -31,3 +28,4 @@ All changes are purely cosmetic / defensive. No DB changes, no new deps, no API 
 - **2026-04-01** — Completed Dashboard Items: created src/lib/db/items.ts with getPinnedItems and getRecentItems, updated ItemRow to use DB ItemWithMeta type, replaced all mock item data in dashboard page with real Neon/Prisma data, pinned section hidden when empty, favorite icon on CollectionCard changed from star to heart for consistency
 - **2026-04-01** — Completed Stats & Sidebar: added getItemTypesWithCounts to items.ts (system types with per-user counts, ordered: snippets/prompts/commands/notes/files/images/links), added getSidebarCollections to collections.ts (favorites + 4 most recent), updated dashboard layout to async server component passing sidebar data as props, replaced all mock-data usage in Sidebar with real DB data; recents show colored circle based on dominant item type, favorites show heart icon, added "View all collections" link
 - **2026-04-02** — Completed Pro Badge in Sidebar: installed ShadCN Badge component, added subtle outline PRO badge next to File and Image type names in the sidebar (Pro-only types); item counts preserved for all types
+- **2026-04-05** — Completed Code Quality Quick Wins: extracted getDemoUser() utility to src/lib/db/user.ts (throws on missing seed data); fixed stable React key in CollectionCard (t.icon vs index); guarded UserAvatar against empty/whitespace name; removed dead toggle() from SidebarProvider; added dev-mode console.warn in TypeIcon for unknown icon names
