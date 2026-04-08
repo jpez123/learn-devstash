@@ -1,18 +1,29 @@
-# Current Feature
+# Current Feature: Email Verification on Register
 
-<!-- Feature name and short description -->
+Send a verification email via Resend when a user registers; block sign-in until the email link is clicked.
 
 ## Status
 
-<!-- In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and requirements -->
+- After registration, send a verification email via Resend with a signed token link
+- Store the token in the `VerificationToken` table (already in Prisma schema)
+- Create a `GET /api/auth/verify-email?token=...` route that marks `emailVerified` on the user and deletes the token
+- Block credentials sign-in for users whose `emailVerified` is null — return a clear error message
+- Registration success toast updated to tell the user to check their email
 
 ## Notes
 
-<!-- Any extra notes -->
+- Resend API key is in `.env` as `RESEND_API_KEY`
+- `VerificationToken` model already exists in the schema (identifier, token, expires)
+- Token should expire in 24 hours
+- Use `crypto.randomUUID()` for the token value
+- `emailVerified` field already exists on the `User` model
+- GitHub OAuth users skip verification (emailVerified is set by NextAuth automatically)
+- The verification link should be: `{APP_URL}/api/auth/verify-email?token={token}`
+- `APP_URL` should come from env (e.g. `NEXT_PUBLIC_APP_URL` or `NEXTAUTH_URL`)
 
 ## History
 

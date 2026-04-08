@@ -11,13 +11,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-function RegisteredToast() {
+function ParamToasts() {
   const searchParams = useSearchParams();
   const fired = useRef(false);
   useEffect(() => {
-    if (searchParams.get('registered') === '1' && !fired.current) {
-      fired.current = true;
-      toast.success('Account created! You can now sign in.');
+    if (fired.current) return;
+    fired.current = true;
+    if (searchParams.get('registered') === '1') {
+      toast.success('Account created! Check your email to verify your account.');
+    } else if (searchParams.get('verified') === '1') {
+      toast.success('Email verified! You can now sign in.');
+    } else if (searchParams.get('error') === 'expired-token') {
+      toast.error('Verification link has expired. Please register again.');
+    } else if (searchParams.get('error') === 'invalid-token') {
+      toast.error('Invalid verification link.');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -45,7 +52,7 @@ export default function SignInPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError('Invalid email or password');
+      setError('Invalid credentials or email not verified.');
     } else {
       router.push('/dashboard');
     }
@@ -57,7 +64,7 @@ export default function SignInPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Suspense><RegisteredToast /></Suspense>
+      <Suspense><ParamToasts /></Suspense>
       <div className="w-full max-w-sm space-y-6">
         {/* Logo */}
         <div className="flex flex-col items-center gap-2">
