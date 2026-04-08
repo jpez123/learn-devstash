@@ -1,4 +1,5 @@
-import { getDemoUser } from '@/lib/db/user';
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
 import { getItemTypesWithCounts } from '@/lib/db/items';
 import { getSidebarCollections } from '@/lib/db/collections';
 import TopBar from '@/components/layout/TopBar';
@@ -10,14 +11,21 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const demoUser = await getDemoUser();
+  const session = await auth();
+  if (!session?.user?.id) redirect('/sign-in');
+
+  const userId = session.user.id;
 
   const [itemTypes, sidebarCollections] = await Promise.all([
-    getItemTypesWithCounts(demoUser.id),
-    getSidebarCollections(demoUser.id),
+    getItemTypesWithCounts(userId),
+    getSidebarCollections(userId),
   ]);
 
-  const user = { name: demoUser.name ?? 'User', email: demoUser.email ?? '' };
+  const user = {
+    name: session.user.name ?? 'User',
+    email: session.user.email ?? '',
+    image: session.user.image ?? null,
+  };
 
   return (
     <SidebarProvider>

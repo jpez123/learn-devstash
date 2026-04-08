@@ -2,29 +2,28 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Heart, Settings, X, PanelLeft, ChevronDown } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import { Heart, Settings, X, PanelLeft, ChevronDown, LogOut, User } from 'lucide-react';
 import { useSidebar } from './SidebarProvider';
 import TypeIcon from '@/components/ui/TypeIcon';
+import UserAvatar from '@/components/ui/UserAvatar';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import type { ItemTypeWithCount } from '@/lib/db/items';
 import type { SidebarCollection } from '@/lib/db/collections';
 
 type SidebarProps = {
   itemTypes: ItemTypeWithCount[];
   sidebarCollections: { favorites: SidebarCollection[]; recents: SidebarCollection[] };
-  user: { name: string; email: string };
+  user: { name: string; email: string; image: string | null };
 };
-
-function UserAvatar({ name }: { name: string }) {
-  const initials = name.trim()
-    ? name.trim().split(/\s+/).map((n) => n[0]).join('').slice(0, 2)
-    : '?';
-  return (
-    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-      {initials}
-    </div>
-  );
-}
 
 function SidebarInner({
   collapsed,
@@ -32,6 +31,7 @@ function SidebarInner({
   sidebarCollections,
   user,
 }: { collapsed: boolean } & SidebarProps) {
+  const router = useRouter();
   const [typesOpen, setTypesOpen] = useState(true);
   const [collectionsOpen, setCollectionsOpen] = useState(true);
 
@@ -157,22 +157,40 @@ function SidebarInner({
 
       {/* User area */}
       <div className="mt-auto border-t border-border p-3">
-        {collapsed ? (
-          <div className="flex justify-center">
-            <UserAvatar name={user.name} />
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <UserAvatar name={user.name} />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{user.name}</p>
-              <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-            </div>
-            <button className="shrink-0 text-muted-foreground hover:text-foreground">
-              <Settings size={14} />
-            </button>
-          </div>
-        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={`flex w-full rounded-md p-1 hover:bg-accent ${collapsed ? 'justify-center' : 'items-center gap-2'}`}
+          >
+            <UserAvatar name={user.name} image={user.image} size={28} />
+            {!collapsed && (
+              <>
+                <div className="min-w-0 flex-1 text-left">
+                  <p className="truncate text-sm font-medium">{user.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                </div>
+                <Settings size={14} className="shrink-0 text-muted-foreground" />
+              </>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="start" className="w-48">
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => router.push('/profile')}
+            >
+              <User size={14} />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              variant="destructive"
+              className="flex items-center gap-2"
+              onClick={() => signOut({ redirectTo: '/sign-in' })}
+            >
+              <LogOut size={14} />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
@@ -211,13 +229,14 @@ export default function Sidebar({ itemTypes, sidebarCollections, user }: Sidebar
         />
       </aside>
 
-      {/* Mobile drawer */}
+      {/* Mobile overlay */}
       <div
         className={`fixed inset-0 z-40 bg-black/50 md:hidden transition-opacity duration-300 ${
           isMobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={closeMobile}
       />
+      {/* Mobile drawer */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-background md:hidden transition-transform duration-300 ease-in-out ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
