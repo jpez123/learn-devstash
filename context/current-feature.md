@@ -1,29 +1,16 @@
-# Current Feature: Email Verification on Register
-
-Send a verification email via Resend when a user registers; block sign-in until the email link is clicked.
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- After registration, send a verification email via Resend with a signed token link
-- Store the token in the `VerificationToken` table (already in Prisma schema)
-- Create a `GET /api/auth/verify-email?token=...` route that marks `emailVerified` on the user and deletes the token
-- Block credentials sign-in for users whose `emailVerified` is null — return a clear error message
-- Registration success toast updated to tell the user to check their email
+<!-- Add goals here -->
 
 ## Notes
 
-- Resend API key is in `.env` as `RESEND_API_KEY`
-- `VerificationToken` model already exists in the schema (identifier, token, expires)
-- Token should expire in 24 hours
-- Use `crypto.randomUUID()` for the token value
-- `emailVerified` field already exists on the `User` model
-- GitHub OAuth users skip verification (emailVerified is set by NextAuth automatically)
-- The verification link should be: `{APP_URL}/api/auth/verify-email?token={token}`
-- `APP_URL` should come from env (e.g. `NEXT_PUBLIC_APP_URL` or `NEXTAUTH_URL`)
+<!-- Add notes here -->
 
 ## History
 
@@ -43,3 +30,4 @@ In Progress
 - **2026-04-07** — Completed Auth Phase 1: NextAuth v5 with GitHub OAuth and Prisma adapter; split config pattern for edge compatibility (auth.config.ts / auth.ts); proxy.ts protects /dashboard/* routes with redirect to sign-in; Session type extended with user.id; /api/auth/[...nextauth] route handler wired up
 - **2026-04-07** — Completed Auth Phase 2: Credentials provider added (placeholder in auth.config.ts, bcrypt validation in auth.ts); POST /api/auth/register route validates inputs, checks uniqueness, hashes password with bcryptjs, creates user
 - **2026-04-07** — Completed Auth Phase 3: Custom /sign-in and /register pages with form validation and error display; Sonner toast on successful registration; reusable UserAvatar component (GitHub image or initials fallback); sidebar user area uses real session data with sign-out dropdown; auth.ts and proxy.ts updated to use /sign-in
+- **2026-04-07** — Completed Email Verification: Resend sends verification email on register; token stored in VerificationToken (24h expiry); GET /api/auth/verify-email?token= marks emailVerified and deletes token; credentials sign-in blocked for unverified users with clear error; register toast updated to prompt checking email
