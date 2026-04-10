@@ -1,26 +1,16 @@
-# Current Feature: Forgot Password
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add "Forgot password?" link on the /sign-in page
-- Create a POST /api/auth/forgot-password route that accepts an email, generates a reset token using the existing VerificationToken model, and sends a reset email via Resend
-- Create a GET/POST /api/auth/reset-password route that validates the token, accepts a new password, updates the user's hashed password, and deletes the token
-- Create a /forgot-password page with an email input form
-- Create a /reset-password?token= page with a new password + confirm password form
-- Show appropriate success/error messages at each step
-- Tokens expire after 1 hour (shorter window than email verification)
-- Guard against user enumeration: always show "If that email exists, we sent a reset link" regardless of whether the email is found
+<!-- Add goals here -->
 
 ## Notes
 
-- Reuse the existing `VerificationToken` model (identifier = email, token = reset token, expires = now + 1h)
-- EMAIL_VERIFICATION_ENABLED toggle does NOT affect password reset — reset emails always send
-- Follow existing patterns: Resend for email, bcryptjs for hashing, same error handling style as register/verify-email routes
-- Reuse existing UI patterns from /sign-in and /register pages (same card layout, form style)
+<!-- Add notes here -->
 
 ## History
 
@@ -42,3 +32,4 @@ In Progress
 - **2026-04-07** — Completed Auth Phase 3: Custom /sign-in and /register pages with form validation and error display; Sonner toast on successful registration; reusable UserAvatar component (GitHub image or initials fallback); sidebar user area uses real session data with sign-out dropdown; auth.ts and proxy.ts updated to use /sign-in
 - **2026-04-07** — Completed Email Verification: Resend sends verification email on register; token stored in VerificationToken (24h expiry); GET /api/auth/verify-email?token= marks emailVerified and deletes token; credentials sign-in blocked for unverified users with clear error; register toast updated to prompt checking email
 - **2026-04-09** — Completed Email Verification Toggle: added EMAIL_VERIFICATION_ENABLED env var; when "false", skips Resend send and auto-sets emailVerified on registration, removes sign-in block; when "true" (default), full verification flow runs with error handling — failed sends roll back user+token and surface error to the register form
+- **2026-04-09** — Completed Forgot Password: "Forgot password?" link on sign-in page; /forgot-password page (email form, always shows success to prevent enumeration); POST /api/auth/forgot-password generates 1h VerificationToken (identifier prefixed reset:) and sends Resend email; /reset-password?token= page (new + confirm password form, toast on success); POST /api/auth/reset-password validates token, hashes and updates password, deletes token
