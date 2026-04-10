@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Forgot Password
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Add "Forgot password?" link on the /sign-in page
+- Create a POST /api/auth/forgot-password route that accepts an email, generates a reset token using the existing VerificationToken model, and sends a reset email via Resend
+- Create a GET/POST /api/auth/reset-password route that validates the token, accepts a new password, updates the user's hashed password, and deletes the token
+- Create a /forgot-password page with an email input form
+- Create a /reset-password?token= page with a new password + confirm password form
+- Show appropriate success/error messages at each step
+- Tokens expire after 1 hour (shorter window than email verification)
+- Guard against user enumeration: always show "If that email exists, we sent a reset link" regardless of whether the email is found
 
 ## Notes
 
-<!-- Add notes here -->
+- Reuse the existing `VerificationToken` model (identifier = email, token = reset token, expires = now + 1h)
+- EMAIL_VERIFICATION_ENABLED toggle does NOT affect password reset — reset emails always send
+- Follow existing patterns: Resend for email, bcryptjs for hashing, same error handling style as register/verify-email routes
+- Reuse existing UI patterns from /sign-in and /register pages (same card layout, form style)
 
 ## History
 
