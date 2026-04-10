@@ -1,23 +1,16 @@
-# Current Feature: Email Verification Toggle
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a toggle (env variable or config flag) to enable/disable email verification on registration
-- When disabled, users can register and sign in without verifying their email
-- When enabled, the existing Resend-based verification flow works as before
-- Make it easy to switch between modes for local dev vs. production
+<!-- Add goals here -->
 
 ## Notes
 
-- Currently, email verification is required after registration via Resend
-- Resend only allows sending to the registered Resend account email without a verified domain, blocking most test users
-- An env variable like `EMAIL_VERIFICATION_ENABLED=false` is the simplest approach — set it in `.env.local` for dev
-- The toggle should gate: (1) sending the verification email on register, (2) the sign-in block for unverified users
-- When disabled, `emailVerified` can be set to `now()` automatically on registration so the user is treated as verified
+<!-- Add notes here -->
 
 ## History
 
@@ -38,3 +31,4 @@ In Progress
 - **2026-04-07** — Completed Auth Phase 2: Credentials provider added (placeholder in auth.config.ts, bcrypt validation in auth.ts); POST /api/auth/register route validates inputs, checks uniqueness, hashes password with bcryptjs, creates user
 - **2026-04-07** — Completed Auth Phase 3: Custom /sign-in and /register pages with form validation and error display; Sonner toast on successful registration; reusable UserAvatar component (GitHub image or initials fallback); sidebar user area uses real session data with sign-out dropdown; auth.ts and proxy.ts updated to use /sign-in
 - **2026-04-07** — Completed Email Verification: Resend sends verification email on register; token stored in VerificationToken (24h expiry); GET /api/auth/verify-email?token= marks emailVerified and deletes token; credentials sign-in blocked for unverified users with clear error; register toast updated to prompt checking email
+- **2026-04-09** — Completed Email Verification Toggle: added EMAIL_VERIFICATION_ENABLED env var; when "false", skips Resend send and auto-sets emailVerified on registration, removes sign-in block; when "true" (default), full verification flow runs with error handling — failed sends roll back user+token and surface error to the register form
