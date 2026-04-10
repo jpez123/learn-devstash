@@ -1,25 +1,16 @@
-# Current Feature: Profile Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a `/profile` route (protected, requires authentication)
-- Display user info: name, email, avatar (GitHub image or initials fallback), account creation date
-- Show usage stats: total items, total collections, per-type item count breakdown (snippets, prompts, notes, commands, links, files, images)
-- Change password form (email/password users only — hidden for GitHub OAuth users)
-- Delete account button with confirmation dialog to prevent accidental deletion
+<!-- Add goals here -->
 
 ## Notes
 
-- Avatar: reuse existing `UserAvatar` component (already handles GitHub image vs initials fallback)
-- Change password only shown when `user.password` is set (i.e. not OAuth-only accounts)
-- Delete account must show a confirmation dialog before proceeding
-- Fetch real stats from DB (items count, collections count, per-type breakdown) — reuse or extend existing `getItemTypesWithCounts` from `src/lib/db/items.ts`
-- Route protection: add `/profile` to the protected paths in `proxy.ts` (or it may already be covered by `/dashboard/*` — check)
-- Follow existing data-fetching pattern: async server component with direct Prisma calls
+<!-- Add notes here -->
 
 ## History
 
@@ -42,3 +33,4 @@ In Progress
 - **2026-04-07** — Completed Email Verification: Resend sends verification email on register; token stored in VerificationToken (24h expiry); GET /api/auth/verify-email?token= marks emailVerified and deletes token; credentials sign-in blocked for unverified users with clear error; register toast updated to prompt checking email
 - **2026-04-09** — Completed Email Verification Toggle: added EMAIL_VERIFICATION_ENABLED env var; when "false", skips Resend send and auto-sets emailVerified on registration, removes sign-in block; when "true" (default), full verification flow runs with error handling — failed sends roll back user+token and surface error to the register form
 - **2026-04-09** — Completed Forgot Password: "Forgot password?" link on sign-in page; /forgot-password page (email form, always shows success to prevent enumeration); POST /api/auth/forgot-password generates 1h VerificationToken (identifier prefixed reset:) and sends Resend email; /reset-password?token= page (new + confirm password form, toast on success); POST /api/auth/reset-password validates token, hashes and updates password, deletes token
+- **2026-04-09** — Completed Profile Page: /profile route (protected via proxy + layout auth check); user info card with avatar/name/email/join date; usage stats (total items, total collections, per-type breakdown with color dots); ChangePasswordForm (email users only, gated on user.password); DeleteAccountSection with confirmation dialog; POST /api/auth/change-password and DELETE /api/auth/delete-account API routes; installed ShadCN Dialog (base-ui)
