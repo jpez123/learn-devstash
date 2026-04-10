@@ -41,8 +41,10 @@ export default function RegisterPage() {
 
     if (!res.ok) {
       setError(data.error ?? 'Registration failed');
-    } else {
+    } else if (data.emailVerificationRequired) {
       router.push('/sign-in?registered=1');
+    } else {
+      router.push('/sign-in?registered=noverify');
     }
   }
 

@@ -6,7 +6,7 @@ export async function sendVerificationEmail(email: string, token: string) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const verifyUrl = `${appUrl}/api/auth/verify-email?token=${token}`;
 
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: "DevStash <onboarding@resend.dev>",
     to: email,
     subject: "Verify your DevStash email",
@@ -17,4 +17,8 @@ export async function sendVerificationEmail(email: string, token: string) {
       <p>Or copy this URL into your browser:<br/>${verifyUrl}</p>
     `,
   });
+
+  if (error) {
+    throw new Error(error.message);
+  }
 }

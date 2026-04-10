@@ -35,20 +35,41 @@ export async function POST(req: NextRequest) {
   }
 
   const hashed = await bcrypt.hash(password, 12);
+  const verificationEnabled = process.env.EMAIL_VERIFICATION_ENABLED !== "false";
 
   await prisma.user.create({
-    data: { name, email, password: hashed },
+    data: {
+      name,
+      email,
+      password: hashed,
+      emailVerified: verificationEnabled ? null : new Date(),
+    },
   });
 
-  // Generate a verification token (expires in 24h)
-  const token = crypto.randomUUID();
-  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  if (verificationEnabled) {
+    // Generate a verification token (expires in 24h)
+    const token = crypto.randomUUID();
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-  await prisma.verificationToken.create({
-    data: { identifier: email, token, expires },
-  });
+    await prisma.verificationToken.create({
+      data: { identifier: email, token, expires },
+    });
 
-  await sendVerificationEmail(email, token);
+    try {
+      await sendVerificationEmail(email, token);
+    } catch {
+      // Roll back the user and token so the address can be re-registered once the issue is fixed
+      await prisma.verificationToken.delete({ where: { token } });
+      await prisma.user.delete({ where: { email } });
+      return NextResponse.json(
+        { error: "Failed to send verification email. Please try again later." },
+        { status: 500 }
+      );
+    }
+  }
 
-  return NextResponse.json({ success: true }, { status: 201 });
+  return NextResponse.json(
+    { success: true, emailVerificationRequired: verificationEnabled },
+    { status: 201 }
+  );
 }

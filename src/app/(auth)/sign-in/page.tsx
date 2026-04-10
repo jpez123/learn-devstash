@@ -19,6 +19,8 @@ function ParamToasts() {
     fired.current = true;
     if (searchParams.get('registered') === '1') {
       toast.success('Account created! Check your email to verify your account.');
+    } else if (searchParams.get('registered') === 'noverify') {
+      toast.success('Account created! You can now sign in.');
     } else if (searchParams.get('verified') === '1') {
       toast.success('Email verified! You can now sign in.');
     } else if (searchParams.get('error') === 'expired-token') {
