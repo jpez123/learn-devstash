@@ -10,6 +10,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   callbacks: {
+    async jwt({ token }) {
+      if (token.sub) {
+        const user = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: { passwordChangedAt: true },
+        });
+        if (user?.passwordChangedAt && token.iat) {
+          const changedAt = Math.floor(user.passwordChangedAt.getTime() / 1000);
+          if ((token.iat as number) < changedAt) return null;
+        }
+      }
+      return token;
+    },
     session({ session, token }) {
       if (token.sub) {
         session.user.id = token.sub;

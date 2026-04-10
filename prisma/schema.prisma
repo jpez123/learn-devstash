@@ -18,6 +18,7 @@ model User {
   emailVerified        DateTime?
   image                String?
   password             String? // hashed, null for OAuth users
+  passwordChangedAt    DateTime?
   isPro                Boolean   @default(false)
   stripeCustomerId     String?   @unique
   stripeSubscriptionId String?   @unique
