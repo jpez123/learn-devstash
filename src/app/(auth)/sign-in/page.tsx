@@ -45,6 +45,20 @@ export default function SignInPage() {
     setError('');
     setLoading(true);
 
+    // Pre-flight rate limit check — gives proper error message before NextAuth swallows it
+    const limitRes = await fetch('/api/auth/login-rate-check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!limitRes.ok) {
+      const data = await limitRes.json().catch(() => ({}));
+      setError(data.error ?? 'Too many login attempts. Please try again later.');
+      setLoading(false);
+      return;
+    }
+
     const result = await signIn('credentials', {
       email,
       password,

@@ -2,8 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationEmail } from "@/lib/resend";
+import { limiters, getIP, applyRateLimit, tooManyRequestsResponse } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req);
+  const limited = await applyRateLimit(limiters.register, `register:${ip}`);
+  if (limited) return tooManyRequestsResponse(limited.retryAfter);
+
   const body = await req.json();
   const { name, email, password, confirmPassword } = body as {
     name: string;

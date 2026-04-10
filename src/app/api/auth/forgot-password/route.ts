@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPasswordResetEmail } from "@/lib/resend";
+import { limiters, getIP, applyRateLimit, tooManyRequestsResponse } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req);
+  const limited = await applyRateLimit(limiters.forgotPassword, `forgot-password:${ip}`);
+  if (limited) return tooManyRequestsResponse(limited.retryAfter);
+
   const body = await req.json();
   const { email } = body as { email: string };
 
