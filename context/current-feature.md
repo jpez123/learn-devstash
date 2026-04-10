@@ -1,16 +1,25 @@
-# Current Feature
+# Current Feature: Profile Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Create a `/profile` route (protected, requires authentication)
+- Display user info: name, email, avatar (GitHub image or initials fallback), account creation date
+- Show usage stats: total items, total collections, per-type item count breakdown (snippets, prompts, notes, commands, links, files, images)
+- Change password form (email/password users only — hidden for GitHub OAuth users)
+- Delete account button with confirmation dialog to prevent accidental deletion
 
 ## Notes
 
-<!-- Add notes here -->
+- Avatar: reuse existing `UserAvatar` component (already handles GitHub image vs initials fallback)
+- Change password only shown when `user.password` is set (i.e. not OAuth-only accounts)
+- Delete account must show a confirmation dialog before proceeding
+- Fetch real stats from DB (items count, collections count, per-type breakdown) — reuse or extend existing `getItemTypesWithCounts` from `src/lib/db/items.ts`
+- Route protection: add `/profile` to the protected paths in `proxy.ts` (or it may already be covered by `/dashboard/*` — check)
+- Follow existing data-fetching pattern: async server component with direct Prisma calls
 
 ## History
 
