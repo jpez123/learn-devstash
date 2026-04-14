@@ -18,6 +18,9 @@ npm run dev      # Start dev server
 npm run build    # Production build
 npm run start    # Start production server
 npm run lint     # Run ESLint
+npm test         # Run unit tests (server actions + utilities)
+npm run test:watch    # Watch mode
+npm run test:coverage # Coverage report
 ```
 
 ## Stack

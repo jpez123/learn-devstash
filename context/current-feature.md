@@ -1,16 +1,20 @@
-# Current Feature
+# Current Feature: Item List View 3-Column Layout
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Change the item grid in `/items/[type]` from 2 columns to 3 columns on larger screens (`lg+`)
+- Keep the existing responsive behavior: 1 column on mobile, 2 columns on medium screens
+- No changes to `ItemCard` internals — layout only
 
 ## Notes
 
-<!-- Add notes here -->
+- The grid lives in `src/app/(dashboard)/items/[type]/page.tsx`
+- Current class is likely `grid-cols-1 md:grid-cols-2`; target is `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- Verify cards still look good at 3-col width (content shouldn't overflow or truncate awkwardly)
 
 ## History
 

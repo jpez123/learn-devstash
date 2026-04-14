@@ -94,4 +94,12 @@ Example v4 configuration:
 - No commented-out code unless specified
 - No unused imports or variables
 - Keep functions under 50 lines when possible
+
+## Testing
+
+- **Vitest** for unit tests — node environment, no component testing
+- Test scope: `src/lib/**` utilities and `src/actions/**` server actions only
+- Test files: `src/__tests__/**/*.test.ts` (mirror the source path)
+- Mock external dependencies (Prisma, Resend, Upstash) — never hit real services in tests
+- Run `npm test` before every commit
 ```
