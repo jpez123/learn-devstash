@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { signIn } from 'next-auth/react';
+import { signInWithGitHub } from '@/actions/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -74,10 +75,6 @@ export default function SignInPage() {
     }
   }
 
-  async function handleGitHub() {
-    await signIn('github', { redirectTo: '/dashboard' });
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Suspense><ParamToasts /></Suspense>
@@ -97,15 +94,12 @@ export default function SignInPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* GitHub */}
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleGitHub}
-              type="button"
-            >
-              <GitBranch className="mr-2 h-4 w-4" />
-              Sign in with GitHub
-            </Button>
+            <form action={signInWithGitHub}>
+              <Button variant="outline" className="w-full" type="submit">
+                <GitBranch className="mr-2 h-4 w-4" />
+                Sign in with GitHub
+              </Button>
+            </form>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
