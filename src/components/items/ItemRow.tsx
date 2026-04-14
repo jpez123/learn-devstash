@@ -10,7 +10,10 @@ export default function ItemRow({ item }: { item: ItemWithMeta }) {
   const { itemType } = item;
 
   return (
-    <div className="flex cursor-pointer items-center gap-3 bg-card px-4 py-3 transition-colors hover:bg-accent/50">
+    <div
+      className="flex cursor-pointer items-center gap-3 bg-card px-4 py-3 transition-colors hover:bg-accent/50"
+      style={{ borderLeftColor: itemType.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}
+    >
       <div
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
         style={{ backgroundColor: `${itemType.color}25` }}
