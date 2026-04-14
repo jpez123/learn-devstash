@@ -1,25 +1,16 @@
-# Current Feature: Fix GitHub OAuth Redirect Issue
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- GitHub sign-in works on the first click (no double-click required)
-- Redirect to `/dashboard` is reliable after GitHub OAuth completes
-- Server action `signInWithGitHub` created in `src/actions/auth.ts`
-- Sign-in page GitHub button converted from `onClick` handler to `<form action={...}>`
-- Client-side `isGitHubLoading` state and `handleGitHub` function removed
+<!-- Add goals here -->
 
 ## Notes
 
-- Root cause: client-side `signIn` from `next-auth/react` has unreliable redirect behavior
-- Fix: use server-side `signIn` from `@/auth` via a Server Action (NextAuth v5 recommended pattern)
-- Use `redirectTo` (NextAuth v5), not `callbackUrl` (v4)
-- No SessionProvider needed
-- Credentials login stays as-is (`redirect: false` pattern works fine)
-- Files to change: `src/actions/auth.ts` (new), `src/app/(auth)/sign-in/page.tsx` (update)
+<!-- Add notes here -->
 
 ## History
 
@@ -44,3 +35,4 @@ In Progress
 - **2026-04-09** — Completed Forgot Password: "Forgot password?" link on sign-in page; /forgot-password page (email form, always shows success to prevent enumeration); POST /api/auth/forgot-password generates 1h VerificationToken (identifier prefixed reset:) and sends Resend email; /reset-password?token= page (new + confirm password form, toast on success); POST /api/auth/reset-password validates token, hashes and updates password, deletes token
 - **2026-04-09** — Completed Profile Page: /profile route (protected via proxy + layout auth check); user info card with avatar/name/email/join date; usage stats (total items, total collections, per-type breakdown with color dots); ChangePasswordForm (email users only, gated on user.password); DeleteAccountSection with confirmation dialog; POST /api/auth/change-password and DELETE /api/auth/delete-account API routes; installed ShadCN Dialog (base-ui)
 - **2026-04-09** — Completed Rate Limiting for Auth: installed @upstash/ratelimit + @upstash/redis; created src/lib/rate-limit.ts with sliding window limiters (fail-open when unconfigured); protected register (3/hr IP), forgot-password (3/hr IP), reset-password (5/15min IP); added /api/auth/login-rate-check pre-flight endpoint (5/15min IP+email) called by sign-in form before signIn() to surface 429 messages; login rate limiting uses pre-flight pattern due to NextAuth swallowing errors from authorize
+- **2026-04-13** — Fixed GitHub OAuth redirect issue: replaced client-side signIn('github') onClick handler with signInWithGitHub server action (src/actions/auth.ts) using signIn from @/auth; GitHub button converted to <form action={signInWithGitHub}>; fixes double-click bug where first click authenticated but redirect to /dashboard failed
