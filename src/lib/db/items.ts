@@ -73,6 +73,31 @@ export async function getPinnedItems(userId: string): Promise<ItemWithMeta[]> {
   }));
 }
 
+export async function getItemsByType(userId: string, typeName: string): Promise<ItemWithMeta[]> {
+  const items = await prisma.item.findMany({
+    where: {
+      userId,
+      itemType: { name: typeName },
+    },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { name: true } } } },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt,
+    itemType: item.itemType,
+    tags: item.tags.map((t) => t.tag.name),
+  }));
+}
+
 export async function getRecentItems(userId: string, limit = 10): Promise<ItemWithMeta[]> {
   const items = await prisma.item.findMany({
     where: { userId },
