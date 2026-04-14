@@ -1,23 +1,16 @@
-# Current Feature: Items List View
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create dynamic route `/items/[type]` (e.g., /items/snippets, /items/notes)
-- Fetch and display items filtered by item type from the database
-- Render a responsive grid of ItemCard components (2 columns on md+)
-- Each card has a left border colored by item type
-- Follow existing codebase patterns
+<!-- Add goals here -->
 
 ## Notes
 
-- Route: `src/app/(dashboard)/items/[type]/page.tsx`
-- Type param maps to item type slug (e.g., "snippets" → snippet type)
-- Use existing Prisma item queries and ItemType color data
-- ItemCard component to be created (distinct from existing ItemRow list component)
+<!-- Add notes here -->
 
 ## History
 
@@ -43,3 +36,4 @@ In Progress
 - **2026-04-09** — Completed Profile Page: /profile route (protected via proxy + layout auth check); user info card with avatar/name/email/join date; usage stats (total items, total collections, per-type breakdown with color dots); ChangePasswordForm (email users only, gated on user.password); DeleteAccountSection with confirmation dialog; POST /api/auth/change-password and DELETE /api/auth/delete-account API routes; installed ShadCN Dialog (base-ui)
 - **2026-04-09** — Completed Rate Limiting for Auth: installed @upstash/ratelimit + @upstash/redis; created src/lib/rate-limit.ts with sliding window limiters (fail-open when unconfigured); protected register (3/hr IP), forgot-password (3/hr IP), reset-password (5/15min IP); added /api/auth/login-rate-check pre-flight endpoint (5/15min IP+email) called by sign-in form before signIn() to surface 429 messages; login rate limiting uses pre-flight pattern due to NextAuth swallowing errors from authorize
 - **2026-04-13** — Fixed GitHub OAuth redirect issue: replaced client-side signIn('github') onClick handler with signInWithGitHub server action (src/actions/auth.ts) using signIn from @/auth; GitHub button converted to <form action={signInWithGitHub}>; fixes double-click bug where first click authenticated but redirect to /dashboard failed
+- **2026-04-13** — Completed Items List View: dynamic route /items/[type] (snippets, prompts, commands, notes, files, images, links); added getItemsByType to items.ts; new ItemCard component with left border colored by type, type icon, tags, favorite star; responsive 2-column grid (md+); empty state with dashed border; invalid slugs return 404
