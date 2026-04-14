@@ -1,20 +1,16 @@
-# Current Feature: Item List View 3-Column Layout
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Change the item grid in `/items/[type]` from 2 columns to 3 columns on larger screens (`lg+`)
-- Keep the existing responsive behavior: 1 column on mobile, 2 columns on medium screens
-- No changes to `ItemCard` internals — layout only
+<!-- Add goals here -->
 
 ## Notes
 
-- The grid lives in `src/app/(dashboard)/items/[type]/page.tsx`
-- Current class is likely `grid-cols-1 md:grid-cols-2`; target is `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
-- Verify cards still look good at 3-col width (content shouldn't overflow or truncate awkwardly)
+<!-- Add notes here -->
 
 ## History
 
@@ -41,3 +37,4 @@ In Progress
 - **2026-04-09** — Completed Rate Limiting for Auth: installed @upstash/ratelimit + @upstash/redis; created src/lib/rate-limit.ts with sliding window limiters (fail-open when unconfigured); protected register (3/hr IP), forgot-password (3/hr IP), reset-password (5/15min IP); added /api/auth/login-rate-check pre-flight endpoint (5/15min IP+email) called by sign-in form before signIn() to surface 429 messages; login rate limiting uses pre-flight pattern due to NextAuth swallowing errors from authorize
 - **2026-04-13** — Fixed GitHub OAuth redirect issue: replaced client-side signIn('github') onClick handler with signInWithGitHub server action (src/actions/auth.ts) using signIn from @/auth; GitHub button converted to <form action={signInWithGitHub}>; fixes double-click bug where first click authenticated but redirect to /dashboard failed
 - **2026-04-13** — Completed Items List View: dynamic route /items/[type] (snippets, prompts, commands, notes, files, images, links); added getItemsByType to items.ts; new ItemCard component with left border colored by type, type icon, tags, favorite star; responsive 2-column grid (md+); empty state with dashed border; invalid slugs return 404
+- **2026-04-13** — Completed Item List View 3-Column Layout: changed item grid in /items/[type] from 2 to 3 columns on lg+ screens (grid-cols-1 md:grid-cols-2 lg:grid-cols-3); layout-only change, no ItemCard internals modified; added Vitest unit test infrastructure (vitest.config.ts, src/__tests__/lib/utils.test.ts)
