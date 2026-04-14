@@ -1,27 +1,16 @@
-# Current Feature: Item Drawer
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Implement a right-side slide-in drawer using shadcn Sheet that opens when clicking an ItemCard
-- Drawer works on both the dashboard and items list pages
-- Action bar with Favorite (star, yellow when active), Pin, Copy, Edit (pencil), and Delete (trash, right-aligned)
-- Display full item details (title, description, tags, type, metadata) in the drawer
-- Fetch full item data on click via `/api/items/[id]` API route with auth check
-- Show skeleton/loading state while fetching
-- Client wrapper component to manage drawer state (pages are server components)
-- No page navigation — feels snappy, drawer only
+<!-- Add goals here -->
 
 ## Notes
 
-- Use shadcn Sheet component (right side)
-- Card data already fetched by server component — full detail (content, collections, language, etc.) fetched on click
-- Query function added to `src/lib/db/items.ts`; API route calls it with auth check
-- Code editor and other item-specific content deferred to a later feature — focus on drawer shell + details display
-- Reference: `context/screenshots/dashboard-ui-drawer.png`
+<!-- Add notes here -->
 
 ## History
 
@@ -49,3 +38,4 @@ In Progress
 - **2026-04-13** — Fixed GitHub OAuth redirect issue: replaced client-side signIn('github') onClick handler with signInWithGitHub server action (src/actions/auth.ts) using signIn from @/auth; GitHub button converted to <form action={signInWithGitHub}>; fixes double-click bug where first click authenticated but redirect to /dashboard failed
 - **2026-04-13** — Completed Items List View: dynamic route /items/[type] (snippets, prompts, commands, notes, files, images, links); added getItemsByType to items.ts; new ItemCard component with left border colored by type, type icon, tags, favorite star; responsive 2-column grid (md+); empty state with dashed border; invalid slugs return 404
 - **2026-04-13** — Completed Item List View 3-Column Layout: changed item grid in /items/[type] from 2 to 3 columns on lg+ screens (grid-cols-1 md:grid-cols-2 lg:grid-cols-3); layout-only change, no ItemCard internals modified; added Vitest unit test infrastructure (vitest.config.ts, src/__tests__/lib/utils.test.ts)
+- **2026-04-13** — Completed Item Drawer: shadcn Sheet slides in from right on ItemCard/ItemRow click; ItemDrawerProvider context at dashboard layout level manages open state; GET /api/items/[id] with auth check; getItemById in items.ts returns full detail (content, language, url, collections); drawer shows description, content, tags, collections, created/updated; action bar with Favorite (yellow when active), Pin, Copy, Edit, Delete (right-aligned); loading skeleton while fetching; unit tests for getItemById
