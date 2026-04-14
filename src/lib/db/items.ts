@@ -1,5 +1,54 @@
 import { prisma } from '@/lib/prisma';
 
+export type ItemDetail = {
+  id: string;
+  title: string;
+  description: string | null;
+  content: string | null;
+  language: string | null;
+  url: string | null;
+  isFavorite: boolean;
+  isPinned: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  itemType: {
+    name: string;
+    icon: string;
+    color: string;
+  };
+  tags: string[];
+  collections: { id: string; name: string }[];
+};
+
+export async function getItemById(id: string, userId: string): Promise<ItemDetail | null> {
+  const item = await prisma.item.findFirst({
+    where: { id, userId },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { name: true } } } },
+      collections: { include: { collection: { select: { id: true, name: true } } } },
+    },
+  });
+
+  if (!item) return null;
+
+  return {
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    content: item.content,
+    language: item.language,
+    url: item.url,
+    isFavorite: item.isFavorite,
+    isPinned: item.isPinned,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    itemType: item.itemType,
+    tags: item.tags.map((t) => t.tag.name),
+    collections: item.collections.map((c) => ({ id: c.collection.id, name: c.collection.name })),
+  };
+}
+
 export type ItemTypeWithCount = {
   id: string;
   name: string;

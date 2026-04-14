@@ -1,5 +1,8 @@
+'use client';
+
 import { Star } from 'lucide-react';
 import TypeIcon from '@/components/ui/TypeIcon';
+import { useItemDrawer } from '@/components/items/ItemDrawerProvider';
 import { ItemWithMeta } from '@/lib/db/items';
 
 function formatDate(date: Date) {
@@ -8,9 +11,11 @@ function formatDate(date: Date) {
 
 export default function ItemRow({ item }: { item: ItemWithMeta }) {
   const { itemType } = item;
+  const { openDrawer } = useItemDrawer();
 
   return (
     <div
+      onClick={() => openDrawer(item.id)}
       className="flex cursor-pointer items-center gap-3 bg-card px-4 py-3 transition-colors hover:bg-accent/50"
       style={{ borderLeftColor: itemType.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}
     >
