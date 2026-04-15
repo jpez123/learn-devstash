@@ -5,15 +5,17 @@ vi.mock('@/auth', () => ({
 }));
 
 vi.mock('@/lib/db/items', () => ({
+  createItem: vi.fn(),
   updateItem: vi.fn(),
   deleteItem: vi.fn(),
 }));
 
 import { auth } from '@/auth';
-import { updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
-import { updateItem, deleteItem } from '@/actions/items';
+import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
+import { createItem, updateItem, deleteItem } from '@/actions/items';
 
 const mockAuth = vi.mocked(auth);
+const mockCreateItemDb = vi.mocked(createItemDb);
 const mockUpdateItemDb = vi.mocked(updateItemDb);
 const mockDeleteItemDb = vi.mocked(deleteItemDb);
 
@@ -37,6 +39,73 @@ const updatedItem = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+});
+
+const createdItem = {
+  id: 'item-new',
+  title: 'New Snippet',
+  description: null,
+  content: null,
+  language: null,
+  url: null,
+  isFavorite: false,
+  isPinned: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  itemType: { name: 'snippet', icon: 'Code', color: '#3b82f6' },
+  tags: [],
+  collections: [],
+};
+
+describe('createItem action', () => {
+  it('returns unauthorized when no session', async () => {
+    mockAuth.mockResolvedValue(null as never);
+    const result = await createItem({ typeName: 'snippet', title: 'Test', tags: [] });
+    expect(result).toEqual({ success: false, error: 'Unauthorized' });
+  });
+
+  it('returns error when title is empty', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    const result = await createItem({ typeName: 'snippet', title: '   ', tags: [] });
+    expect(result.success).toBe(false);
+    expect((result as { success: false; error: string }).error).toContain('Title');
+  });
+
+  it('returns error when typeName is invalid', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    const result = await createItem({ typeName: 'file', title: 'Test', tags: [] });
+    expect(result.success).toBe(false);
+  });
+
+  it('returns error when url is invalid', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    const result = await createItem({ typeName: 'link', title: 'Test', url: 'not-a-url', tags: [] });
+    expect(result.success).toBe(false);
+  });
+
+  it('returns success with created item', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    mockCreateItemDb.mockResolvedValue(createdItem);
+    const result = await createItem({ typeName: 'snippet', title: 'New Snippet', tags: [] });
+    expect(result).toEqual({ success: true, data: createdItem });
+  });
+
+  it('returns error when db throws', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    mockCreateItemDb.mockRejectedValue(new Error('DB error'));
+    const result = await createItem({ typeName: 'snippet', title: 'Test', tags: [] });
+    expect(result).toEqual({ success: false, error: 'Failed to create item' });
+  });
+
+  it('passes typeName and tags to db function', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    mockCreateItemDb.mockResolvedValue(createdItem);
+    await createItem({ typeName: 'prompt', title: 'My Prompt', tags: ['ai', 'gpt'] });
+    expect(mockCreateItemDb).toHaveBeenCalledWith(
+      'user-1',
+      expect.objectContaining({ typeName: 'prompt', tags: ['ai', 'gpt'] })
+    );
+  });
 });
 
 describe('updateItem action', () => {

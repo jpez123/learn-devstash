@@ -1,0 +1,254 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import TypeIcon from '@/components/ui/TypeIcon';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { createItem } from '@/actions/items';
+
+const SELECTABLE_TYPES = [
+  { name: 'snippet', label: 'Snippet', icon: 'Code', color: '#3b82f6' },
+  { name: 'prompt', label: 'Prompt', icon: 'Sparkles', color: '#8b5cf6' },
+  { name: 'command', label: 'Command', icon: 'Terminal', color: '#f97316' },
+  { name: 'note', label: 'Note', icon: 'StickyNote', color: '#fde047' },
+  { name: 'link', label: 'Link', icon: 'Link', color: '#10b981' },
+] as const;
+
+type TypeName = (typeof SELECTABLE_TYPES)[number]['name'];
+
+const TEXT_TYPES: TypeName[] = ['snippet', 'prompt', 'command', 'note'];
+const CODE_TYPES: TypeName[] = ['snippet', 'command'];
+const URL_TYPES: TypeName[] = ['link'];
+
+type FormState = {
+  title: string;
+  description: string;
+  content: string;
+  url: string;
+  language: string;
+  tags: string;
+};
+
+const DEFAULT_FORM: FormState = {
+  title: '',
+  description: '',
+  content: '',
+  url: '',
+  language: '',
+  tags: '',
+};
+
+interface ItemCreateDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function ItemCreateDialog({ open, onOpenChange }: ItemCreateDialogProps) {
+  const router = useRouter();
+  const [selectedType, setSelectedType] = useState<TypeName>('snippet');
+  const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+  const [saving, setSaving] = useState(false);
+
+  function handleOpenChange(value: boolean) {
+    if (!value) {
+      setForm(DEFAULT_FORM);
+      setSelectedType('snippet');
+    }
+    onOpenChange(value);
+  }
+
+  function set(field: keyof FormState, value: string) {
+    setForm((s) => ({ ...s, [field]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+
+    const tags = form.tags
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    const result = await createItem({
+      typeName: selectedType,
+      title: form.title,
+      description: form.description || null,
+      content: form.content || null,
+      url: form.url || null,
+      language: form.language || null,
+      tags,
+    });
+
+    setSaving(false);
+
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success('Item created');
+    handleOpenChange(false);
+    router.refresh();
+  }
+
+  const typeConfig = SELECTABLE_TYPES.find((t) => t.name === selectedType)!;
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>New Item</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Type selector */}
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Type
+            </label>
+            <div className="flex gap-2 flex-wrap">
+              {SELECTABLE_TYPES.map((t) => {
+                const active = selectedType === t.name;
+                return (
+                  <button
+                    key={t.name}
+                    type="button"
+                    onClick={() => setSelectedType(t.name)}
+                    className="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors"
+                    style={
+                      active
+                        ? { borderColor: t.color, backgroundColor: `${t.color}20`, color: t.color }
+                        : {}
+                    }
+                  >
+                    <TypeIcon iconName={t.icon} color={active ? t.color : 'currentColor'} size={13} />
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Title */}
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Title <span className="text-destructive">*</span>
+            </label>
+            <input
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              value={form.title}
+              onChange={(e) => set('title', e.target.value)}
+              placeholder="Item title"
+              autoFocus
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Description
+            </label>
+            <input
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              value={form.description}
+              onChange={(e) => set('description', e.target.value)}
+              placeholder="Optional description"
+            />
+          </div>
+
+          {/* Content — text types only */}
+          {TEXT_TYPES.includes(selectedType) && (
+            <div>
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                Content
+              </label>
+              <textarea
+                className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring"
+                rows={6}
+                value={form.content}
+                onChange={(e) => set('content', e.target.value)}
+                placeholder="Content"
+              />
+            </div>
+          )}
+
+          {/* Language — snippet/command only */}
+          {CODE_TYPES.includes(selectedType) && (
+            <div>
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                Language
+              </label>
+              <input
+                className="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                value={form.language}
+                onChange={(e) => set('language', e.target.value)}
+                placeholder="e.g. typescript, python"
+              />
+            </div>
+          )}
+
+          {/* URL — link type only */}
+          {URL_TYPES.includes(selectedType) && (
+            <div>
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                URL <span className="text-destructive">*</span>
+              </label>
+              <input
+                className="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                type="url"
+                value={form.url}
+                onChange={(e) => set('url', e.target.value)}
+                placeholder="https://..."
+              />
+            </div>
+          )}
+
+          {/* Tags */}
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Tags
+            </label>
+            <input
+              className="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              value={form.tags}
+              onChange={(e) => set('tags', e.target.value)}
+              placeholder="react, hooks, typescript"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground/60">Comma-separated</p>
+          </div>
+
+          <DialogFooter className="pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleOpenChange(false)}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={
+                saving ||
+                !form.title.trim() ||
+                (URL_TYPES.includes(selectedType) && !form.url.trim())
+              }
+              style={{ backgroundColor: typeConfig.color }}
+            >
+              {saving ? 'Creating…' : 'Create Item'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

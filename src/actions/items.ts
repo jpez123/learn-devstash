@@ -2,8 +2,49 @@
 
 import { z } from 'zod';
 import { auth } from '@/auth';
-import { updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
+import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
 import type { ItemDetail } from '@/lib/db/items';
+
+const CREATABLE_TYPES = ['snippet', 'prompt', 'command', 'note', 'link'] as const;
+
+const createItemSchema = z.object({
+  typeName: z.enum(CREATABLE_TYPES),
+  title: z.string().trim().min(1, 'Title is required'),
+  description: z.string().trim().nullish().transform((v) => v ?? null),
+  content: z.string().nullish().transform((v) => v ?? null),
+  url: z.string().nullish().transform((v) => v || null).pipe(
+    z.string().url('Invalid URL').nullable()
+  ),
+  language: z.string().trim().nullish().transform((v) => v ?? null),
+  tags: z.array(z.string().trim().min(1)),
+});
+
+export async function createItem(formData: {
+  typeName: string;
+  title: string;
+  description?: string | null;
+  content?: string | null;
+  url?: string | null;
+  language?: string | null;
+  tags: string[];
+}): Promise<ActionResult<ItemDetail>> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
+  const parsed = createItemSchema.safeParse(formData);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? 'Validation error' };
+  }
+
+  try {
+    const item = await createItemDb(session.user.id, parsed.data);
+    return { success: true, data: item };
+  } catch {
+    return { success: false, error: 'Failed to create item' };
+  }
+}
 
 const updateItemSchema = z.object({
   title: z.string().trim().min(1, 'Title is required'),
