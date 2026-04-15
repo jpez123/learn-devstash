@@ -6,14 +6,16 @@ vi.mock('@/auth', () => ({
 
 vi.mock('@/lib/db/items', () => ({
   updateItem: vi.fn(),
+  deleteItem: vi.fn(),
 }));
 
 import { auth } from '@/auth';
-import { updateItem as updateItemDb } from '@/lib/db/items';
-import { updateItem } from '@/actions/items';
+import { updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
+import { updateItem, deleteItem } from '@/actions/items';
 
 const mockAuth = vi.mocked(auth);
 const mockUpdateItemDb = vi.mocked(updateItemDb);
+const mockDeleteItemDb = vi.mocked(deleteItemDb);
 
 const validSession = { user: { id: 'user-1' } };
 
@@ -91,5 +93,34 @@ describe('updateItem action', () => {
       'user-1',
       expect.objectContaining({ tags: ['react', 'hooks'] })
     );
+  });
+});
+
+describe('deleteItem action', () => {
+  it('returns unauthorized when no session', async () => {
+    mockAuth.mockResolvedValue(null as never);
+    const result = await deleteItem('item-1');
+    expect(result).toEqual({ success: false, error: 'Unauthorized' });
+  });
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    mockDeleteItemDb.mockResolvedValue(false);
+    const result = await deleteItem('item-1');
+    expect(result).toEqual({ success: false, error: 'Item not found or access denied' });
+  });
+
+  it('returns success when item deleted', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    mockDeleteItemDb.mockResolvedValue(true);
+    const result = await deleteItem('item-1');
+    expect(result).toEqual({ success: true, data: null });
+  });
+
+  it('calls db deleteItem with itemId and userId', async () => {
+    mockAuth.mockResolvedValue(validSession as never);
+    mockDeleteItemDb.mockResolvedValue(true);
+    await deleteItem('item-1');
+    expect(mockDeleteItemDb).toHaveBeenCalledWith('item-1', 'user-1');
   });
 });

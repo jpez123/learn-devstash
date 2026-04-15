@@ -11,7 +11,17 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { updateItem } from '@/actions/items';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { updateItem, deleteItem } from '@/actions/items';
 import type { ItemDetail } from '@/lib/db/items';
 
 interface ItemDrawerProps {
@@ -84,6 +94,8 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
     tags: '',
   });
   const [saving, setSaving] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!itemId) {
@@ -115,6 +127,21 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
 
   function cancelEdit() {
     setIsEditMode(false);
+  }
+
+  async function handleDelete() {
+    if (!itemId) return;
+    setDeleting(true);
+    const result = await deleteItem(itemId);
+    setDeleting(false);
+    setDeleteDialogOpen(false);
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success('Item deleted');
+    onClose();
+    router.refresh();
   }
 
   async function handleSave() {
@@ -149,6 +176,7 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
   }
 
   return (
+    <>
     <Sheet open={!!itemId} onOpenChange={(open) => { if (!open) onClose(); }}>
       <SheetContent side="right" className="w-full !max-w-2xl overflow-y-auto p-0" showCloseButton>
         {loading || (itemId && !item) ? (
@@ -227,7 +255,12 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                   <ActionButton icon={<Copy size={14} />} label="Copy" />
                   <ActionButton icon={<Pencil size={14} />} label="Edit" onClick={enterEditMode} />
                   <div className="ml-auto">
-                    <ActionButton icon={<Trash2 size={14} />} label="Delete" danger />
+                    <ActionButton
+                      icon={<Trash2 size={14} />}
+                      label="Delete"
+                      danger
+                      onClick={() => setDeleteDialogOpen(true)}
+                    />
                   </div>
                 </>
               )}
@@ -377,6 +410,28 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
         ) : null}
       </SheetContent>
     </Sheet>
+
+    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete &ldquo;{item?.title}&rdquo;?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. The item will be permanently deleted and removed from all collections.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={deleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {deleting ? 'Deleting…' : 'Delete'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
 

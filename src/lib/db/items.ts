@@ -81,6 +81,14 @@ export type ItemDetail = {
   collections: { id: string; name: string }[];
 };
 
+export async function deleteItem(id: string, userId: string): Promise<boolean> {
+  const existing = await prisma.item.findFirst({ where: { id, userId } });
+  if (!existing) return false;
+
+  await prisma.item.delete({ where: { id } });
+  return true;
+}
+
 export async function getItemById(id: string, userId: string): Promise<ItemDetail | null> {
   const item = await prisma.item.findFirst({
     where: { id, userId },
