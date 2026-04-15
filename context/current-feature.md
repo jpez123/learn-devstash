@@ -1,28 +1,16 @@
-# Current Feature: Item Create
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- "New Item" button in top bar opens a shadcn Dialog modal
-- Type selector lets user pick: snippet, prompt, command, note, link
-- Fields shown based on selected type:
-  - All types: title (required), description, tags
-  - snippet/command: content, language
-  - prompt/note: content
-  - link: URL (required)
-- `createItem` server action with Zod validation
-- `createItem` DB query function in `lib/db/items.ts`
-- Toast on success, modal closes and page refreshes
+<!-- Add goals here -->
 
 ## Notes
 
-- Use shadcn Dialog component (already installed)
-- File/image types excluded from type selector (Pro feature, no upload support yet)
-- Follow existing patterns: server action returns `{ success, data, error }`, toast via Sonner
-- Tags input: comma-separated string, same as edit mode
+<!-- Add notes here -->
 
 ## History
 
@@ -53,3 +41,4 @@ In Progress
 - **2026-04-13** — Completed Item Drawer: shadcn Sheet slides in from right on ItemCard/ItemRow click; ItemDrawerProvider context at dashboard layout level manages open state; GET /api/items/[id] with auth check; getItemById in items.ts returns full detail (content, language, url, collections); drawer shows description, content, tags, collections, created/updated; action bar with Favorite (yellow when active), Pin, Copy, Edit, Delete (right-aligned); loading skeleton while fetching; unit tests for getItemById
 - **2026-04-14** — Completed Item Drawer Edit Mode: Edit button toggles inline edit mode; action bar swaps to Save/Cancel; controlled inputs for title, description, content (text types), language (snippet/command), URL (link), tags (comma-separated); updateItem server action (src/actions/items.ts) with Zod validation + auth/ownership check; updateItem DB query (src/lib/db/items.ts) with tag deleteMany + connectOrCreate; Save disabled when title empty; toast on success/error; router.refresh() after save; unit tests for both DB function and server action
 - **2026-04-14** — Completed Item Delete: Delete button in item drawer opens shadcn AlertDialog confirmation modal showing item title with irreversible warning; deleteItem DB function (src/lib/db/items.ts) with ownership check + prisma.item.delete (cascades tags/collections); deleteItem server action (src/actions/items.ts) with auth check; on confirm: closes drawer, success toast, router.refresh(); on error: error toast; unit tests for DB function and server action
+- **2026-04-14** — Completed Item Create: "New Item" button in top bar opens shadcn Dialog; type selector (snippet, prompt, command, note, link) with color-coded active state; conditional fields (content for text types, language for snippet/command, URL for link); createItem DB function (src/lib/db/items.ts) resolves type by name with isSystem check + tag connectOrCreate; createItem server action (src/actions/items.ts) with Zod validation (type enum, URL validation, title required); toast on success, modal resets and closes, router.refresh(); unit tests for DB function and server action
