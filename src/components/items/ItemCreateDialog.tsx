@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import CodeEditor from '@/components/ui/CodeEditor';
+import MarkdownEditor from '@/components/ui/MarkdownEditor';
 import { createItem } from '@/actions/items';
 
 const SELECTABLE_TYPES = [
@@ -28,6 +29,7 @@ export { SELECTABLE_TYPES };
 
 const TEXT_TYPES: TypeName[] = ['snippet', 'prompt', 'command', 'note'];
 const CODE_TYPES: TypeName[] = ['snippet', 'command'];
+const MARKDOWN_TYPES: TypeName[] = ['note', 'prompt'];
 const URL_TYPES: TypeName[] = ['link'];
 
 type FormState = {
@@ -193,6 +195,11 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
                 <CodeEditor
                   value={form.content}
                   language={form.language || undefined}
+                  onChange={(val) => set('content', val)}
+                />
+              ) : MARKDOWN_TYPES.includes(selectedType) ? (
+                <MarkdownEditor
+                  value={form.content}
                   onChange={(val) => set('content', val)}
                 />
               ) : (

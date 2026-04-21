@@ -22,6 +22,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import CodeEditor from '@/components/ui/CodeEditor';
+import MarkdownEditor from '@/components/ui/MarkdownEditor';
 import { updateItem, deleteItem } from '@/actions/items';
 import type { ItemDetail } from '@/lib/db/items';
 
@@ -79,6 +80,7 @@ function formatDate(date: string | Date) {
 
 const TEXT_TYPES = ['snippet', 'prompt', 'command', 'note'];
 const CODE_TYPES = ['snippet', 'command'];
+const MARKDOWN_TYPES = ['note', 'prompt'];
 const URL_TYPES = ['link'];
 
 export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
@@ -293,6 +295,11 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                           language={editState.language || undefined}
                           onChange={(val) => setEditState((s) => ({ ...s, content: val }))}
                         />
+                      ) : MARKDOWN_TYPES.includes(item.itemType.name) ? (
+                        <MarkdownEditor
+                          value={editState.content}
+                          onChange={(val) => setEditState((s) => ({ ...s, content: val }))}
+                        />
                       ) : (
                         <textarea
                           className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring"
@@ -364,6 +371,8 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                           language={item.language || undefined}
                           readOnly
                         />
+                      ) : MARKDOWN_TYPES.includes(item.itemType.name) ? (
+                        <MarkdownEditor value={item.content} readOnly />
                       ) : (
                         <pre className="overflow-x-auto rounded-md bg-accent/60 p-4 text-xs leading-relaxed text-foreground whitespace-pre-wrap break-words">
                           <code>{item.content}</code>
