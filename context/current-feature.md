@@ -1,26 +1,16 @@
-# Current Feature: Code Editor
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a `CodeEditor` component using Monaco Editor with dark theme
-- Replace `Textarea` with `CodeEditor` for snippet and command item types only
-- Keep `Textarea` for notes, prompts, and other non-code types
-- Add macOS-style window dots (red/yellow/green) at the top of the editor
-- Add a quick copy button in the editor header
-- Display the selected language in the editor header next to the copy button
-- Support both display (readonly) and edit modes
-- Make editor height fluid with a max height of 400px and a scrollbar that matches the dark theme
+<!-- Add goals here -->
 
 ## Notes
 
-- Monaco Editor should use a dark theme consistent with the app's dark-first design
-- Language displayed in the header comes from the item's `language` field
-- This affects the Item Drawer (view + edit modes) — snippets and commands get `CodeEditor`, everything else keeps `Textarea`
-- Readonly mode is for viewing; edit mode enables typing in the editor
+<!-- Add notes here -->
 
 ## History
 
@@ -52,3 +42,4 @@ In Progress
 - **2026-04-14** — Completed Item Drawer Edit Mode: Edit button toggles inline edit mode; action bar swaps to Save/Cancel; controlled inputs for title, description, content (text types), language (snippet/command), URL (link), tags (comma-separated); updateItem server action (src/actions/items.ts) with Zod validation + auth/ownership check; updateItem DB query (src/lib/db/items.ts) with tag deleteMany + connectOrCreate; Save disabled when title empty; toast on success/error; router.refresh() after save; unit tests for both DB function and server action
 - **2026-04-14** — Completed Item Delete: Delete button in item drawer opens shadcn AlertDialog confirmation modal showing item title with irreversible warning; deleteItem DB function (src/lib/db/items.ts) with ownership check + prisma.item.delete (cascades tags/collections); deleteItem server action (src/actions/items.ts) with auth check; on confirm: closes drawer, success toast, router.refresh(); on error: error toast; unit tests for DB function and server action
 - **2026-04-14** — Completed Item Create: "New Item" button in top bar opens shadcn Dialog; type selector (snippet, prompt, command, note, link) with color-coded active state; conditional fields (content for text types, language for snippet/command, URL for link); createItem DB function (src/lib/db/items.ts) resolves type by name with isSystem check + tag connectOrCreate; createItem server action (src/actions/items.ts) with Zod validation (type enum, URL validation, title required); toast on success, modal resets and closes, router.refresh(); unit tests for DB function and server action
+- **2026-04-20** — Completed Code Editor: Monaco Editor component (src/components/ui/CodeEditor.tsx) with vs-dark theme, macOS window dots, language label (falls back to "plaintext"), copy button, fluid height up to 400px; replaces textarea for snippet and command types in ItemDrawer (view + edit modes) and ItemCreateDialog; language field moved above content in create modal; added ItemsTypeHeader (src/components/items/ItemsTypeHeader.tsx) with type-colored add button on /items/[type] pages that preselects the type in the create dialog; file/image types excluded (Pro-only)
