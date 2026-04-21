@@ -1,29 +1,12 @@
-# Current Feature: File & Image Upload (Cloudflare R2)
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create upload API route for R2
-- Create FileUpload component with drag-and-drop and upload progress indicator
-- Update create item modal to use FileUpload for file/image types
-- Delete files from R2 when items are deleted
-- Create download proxy API route (avoids CORS issues)
-- Add download button in ItemDrawer for file types
-- Display image preview for images, file info for files
-
 ## Notes
-
-- File constraints:
-  - Images: max 5 MB — `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.svg`
-  - Files: max 10 MB — `.pdf`, `.txt`, `.md`, `.json`, `.yaml`, `.yml`, `.xml`, `.csv`, `.toml`, `.ini`
-- Accepted MIME types:
-  - Images: `image/png`, `image/jpeg`, `image/gif`, `image/webp`, `image/svg+xml`
-  - Files: `application/pdf`, `text/plain`, `text/markdown`, `application/json`, `application/x-yaml`, `text/yaml`, `application/xml`, `text/xml`, `text/csv`, `application/toml`
-- Stick to `src/lib/db/items.ts` for Prisma/DB functions
-- R2 client lives in `src/lib/r2.ts`
 
 ## History
 
@@ -55,3 +38,4 @@ In Progress
 - **2026-04-14** — Completed Item Create: "New Item" button in top bar opens shadcn Dialog; type selector (snippet, prompt, command, note, link) with color-coded active state; conditional fields (content for text types, language for snippet/command, URL for link); createItem DB function (src/lib/db/items.ts) resolves type by name with isSystem check + tag connectOrCreate; createItem server action (src/actions/items.ts) with Zod validation (type enum, URL validation, title required); toast on success, modal resets and closes, router.refresh(); unit tests for DB function and server action
 - **2026-04-20** — Completed Code Editor: Monaco Editor component (src/components/ui/CodeEditor.tsx) with vs-dark theme, macOS window dots, language label (falls back to "plaintext"), copy button, fluid height up to 400px; replaces textarea for snippet and command types in ItemDrawer (view + edit modes) and ItemCreateDialog; language field moved above content in create modal; added ItemsTypeHeader (src/components/items/ItemsTypeHeader.tsx) with type-colored add button on /items/[type] pages that preselects the type in the create dialog; file/image types excluded (Pro-only)
 - **2026-04-21** — Completed Markdown Editor: MarkdownEditor component (src/components/ui/MarkdownEditor.tsx) with Write/Preview tabs, macOS window dots, copy button; react-markdown + remark-gfm for GFM rendering; readonly mode shows Preview only; full dark-theme .markdown-preview CSS (headings, code blocks, inline code, lists, blockquotes, links, tables, hr); 6px thin scrollbars matching CodeEditor style; replaces textarea for note and prompt types in ItemDrawer (view + edit modes) and ItemCreateDialog; snippets and commands keep CodeEditor unchanged
+- **2026-04-21** — Completed File & Image Upload (Cloudflare R2): installed @aws-sdk/client-s3; created src/lib/r2.ts (upload/delete/get helpers); POST /api/upload with auth, MIME type validation, and size limits (5 MB images, 10 MB files); GET /api/download proxy with userId-prefix ownership check; FileUpload component with drag-and-drop, XHR progress bar, and file info display; ItemCreateDialog now includes file and image types with FileUpload; ItemDrawer shows image preview, file info card, and Download button for file types; deleteItem cleans up R2 object on deletion; ItemDetail type extended with fileUrl, fileName, fileSize
