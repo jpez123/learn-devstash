@@ -5,7 +5,7 @@ import { auth } from '@/auth';
 import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
 import type { ItemDetail } from '@/lib/db/items';
 
-const CREATABLE_TYPES = ['snippet', 'prompt', 'command', 'note', 'link'] as const;
+const CREATABLE_TYPES = ['snippet', 'prompt', 'command', 'note', 'link', 'file', 'image'] as const;
 
 const createItemSchema = z.object({
   typeName: z.enum(CREATABLE_TYPES),
@@ -17,6 +17,9 @@ const createItemSchema = z.object({
   ),
   language: z.string().trim().nullish().transform((v) => v ?? null),
   tags: z.array(z.string().trim().min(1)),
+  fileUrl: z.string().nullish().transform((v) => v ?? null),
+  fileName: z.string().nullish().transform((v) => v ?? null),
+  fileSize: z.number().nullish().transform((v) => v ?? null),
 });
 
 export async function createItem(formData: {
@@ -27,6 +30,9 @@ export async function createItem(formData: {
   url?: string | null;
   language?: string | null;
   tags: string[];
+  fileUrl?: string | null;
+  fileName?: string | null;
+  fileSize?: number | null;
 }): Promise<ActionResult<ItemDetail>> {
   const session = await auth();
   if (!session?.user?.id) {

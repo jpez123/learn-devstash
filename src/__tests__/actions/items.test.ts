@@ -73,7 +73,7 @@ describe('createItem action', () => {
 
   it('returns error when typeName is invalid', async () => {
     mockAuth.mockResolvedValue(validSession as never);
-    const result = await createItem({ typeName: 'file', title: 'Test', tags: [] });
+    const result = await createItem({ typeName: 'custom', title: 'Test', tags: [] });
     expect(result.success).toBe(false);
   });
 
