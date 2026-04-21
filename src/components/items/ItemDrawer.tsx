@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Calendar, Check, X } from 'lucide-react';
+import { Star, Pin, Copy, Pencil, Trash2, FolderOpen, Calendar, Check, X, Download, File as FileIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import TypeIcon from '@/components/ui/TypeIcon';
 import {
@@ -82,6 +82,7 @@ const TEXT_TYPES = ['snippet', 'prompt', 'command', 'note'];
 const CODE_TYPES = ['snippet', 'command'];
 const MARKDOWN_TYPES = ['note', 'prompt'];
 const URL_TYPES = ['link'];
+const FILE_TYPES = ['file', 'image'];
 
 export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
   const router = useRouter();
@@ -256,6 +257,15 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                     active={item.isPinned}
                   />
                   <ActionButton icon={<Copy size={14} />} label="Copy" />
+                  {FILE_TYPES.includes(item.itemType.name) && item.fileUrl && (
+                    <a
+                      href={`/api/download?key=${encodeURIComponent(item.fileUrl)}`}
+                      className="flex items-center gap-1.5 rounded px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                      <Download size={14} />
+                      Download
+                    </a>
+                  )}
                   <ActionButton icon={<Pencil size={14} />} label="Edit" onClick={enterEditMode} />
                   <div className="ml-auto">
                     <ActionButton
@@ -358,6 +368,39 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                     <section>
                       <SectionLabel>Description</SectionLabel>
                       <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                    </section>
+                  )}
+
+                  {/* Image preview */}
+                  {item.itemType.name === 'image' && item.fileUrl && (
+                    <section>
+                      <SectionLabel>Preview</SectionLabel>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/api/download?key=${encodeURIComponent(item.fileUrl)}`}
+                        alt={item.fileName ?? item.title}
+                        className="max-h-80 w-auto rounded-md border border-border object-contain"
+                      />
+                    </section>
+                  )}
+
+                  {/* File info */}
+                  {item.itemType.name === 'file' && item.fileUrl && (
+                    <section>
+                      <SectionLabel>File</SectionLabel>
+                      <div className="flex items-center gap-3 rounded-md border border-border bg-accent/40 px-3 py-2.5">
+                        <FileIcon size={16} className="shrink-0 text-muted-foreground" />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium">{item.fileName ?? 'File'}</p>
+                          {item.fileSize != null && (
+                            <p className="text-xs text-muted-foreground">
+                              {item.fileSize < 1024 * 1024
+                                ? `${(item.fileSize / 1024).toFixed(1)} KB`
+                                : `${(item.fileSize / (1024 * 1024)).toFixed(1)} MB`}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </section>
                   )}
 

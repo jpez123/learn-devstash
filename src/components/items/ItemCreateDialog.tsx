@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import TypeIcon from '@/components/ui/TypeIcon';
+import FileUpload, { type UploadResult } from '@/components/ui/FileUpload';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,8 @@ const SELECTABLE_TYPES = [
   { name: 'command', label: 'Command', icon: 'Terminal', color: '#f97316' },
   { name: 'note', label: 'Note', icon: 'StickyNote', color: '#fde047' },
   { name: 'link', label: 'Link', icon: 'Link', color: '#10b981' },
+  { name: 'file', label: 'File', icon: 'File', color: '#6b7280' },
+  { name: 'image', label: 'Image', icon: 'Image', color: '#ec4899' },
 ] as const;
 
 export type TypeName = (typeof SELECTABLE_TYPES)[number]['name'];
@@ -31,6 +34,7 @@ const TEXT_TYPES: TypeName[] = ['snippet', 'prompt', 'command', 'note'];
 const CODE_TYPES: TypeName[] = ['snippet', 'command'];
 const MARKDOWN_TYPES: TypeName[] = ['note', 'prompt'];
 const URL_TYPES: TypeName[] = ['link'];
+const FILE_TYPES: TypeName[] = ['file', 'image'];
 
 type FormState = {
   title: string;
@@ -60,18 +64,25 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
   const router = useRouter();
   const [selectedType, setSelectedType] = useState<TypeName>(initialType);
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+  const [uploadedFile, setUploadedFile] = useState<UploadResult | null>(null);
   const [saving, setSaving] = useState(false);
 
   function handleOpenChange(value: boolean) {
     if (!value) {
       setForm(DEFAULT_FORM);
       setSelectedType(initialType);
+      setUploadedFile(null);
     }
     onOpenChange(value);
   }
 
   function set(field: keyof FormState, value: string) {
     setForm((s) => ({ ...s, [field]: value }));
+  }
+
+  function handleTypeChange(type: TypeName) {
+    setSelectedType(type);
+    setUploadedFile(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -91,6 +102,9 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
       url: form.url || null,
       language: form.language || null,
       tags,
+      fileUrl: uploadedFile?.key ?? null,
+      fileName: uploadedFile?.fileName ?? null,
+      fileSize: uploadedFile?.fileSize ?? null,
     });
 
     setSaving(false);
@@ -106,6 +120,12 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
   }
 
   const typeConfig = SELECTABLE_TYPES.find((t) => t.name === selectedType)!;
+  const isFileType = FILE_TYPES.includes(selectedType);
+  const submitDisabled =
+    saving ||
+    !form.title.trim() ||
+    (URL_TYPES.includes(selectedType) && !form.url.trim()) ||
+    (isFileType && !uploadedFile);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -127,7 +147,7 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
                   <button
                     key={t.name}
                     type="button"
-                    onClick={() => setSelectedType(t.name)}
+                    onClick={() => handleTypeChange(t.name)}
                     className="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors"
                     style={
                       active
@@ -170,7 +190,22 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
             />
           </div>
 
-          {/* Language — snippet/command only (before content so it appears in editor header) */}
+          {/* File upload — file/image types */}
+          {isFileType && (
+            <div>
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                File <span className="text-destructive">*</span>
+              </label>
+              <FileUpload
+                accept={selectedType === 'image' ? 'image' : 'file'}
+                onUpload={setUploadedFile}
+                onClear={() => setUploadedFile(null)}
+                uploadedFile={uploadedFile}
+              />
+            </div>
+          )}
+
+          {/* Language — snippet/command only */}
           {CODE_TYPES.includes(selectedType) && (
             <div>
               <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
@@ -255,11 +290,7 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
             </Button>
             <Button
               type="submit"
-              disabled={
-                saving ||
-                !form.title.trim() ||
-                (URL_TYPES.includes(selectedType) && !form.url.trim())
-              }
+              disabled={submitDisabled}
               style={{ backgroundColor: typeConfig.color }}
             >
               {saving ? 'Creating…' : 'Create Item'}

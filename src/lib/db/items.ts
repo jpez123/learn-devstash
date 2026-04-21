@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { deleteFromR2 } from '@/lib/r2';
 
 export type CreateItemData = {
   title: string;
@@ -8,6 +9,9 @@ export type CreateItemData = {
   language: string | null;
   typeName: string;
   tags: string[];
+  fileUrl?: string | null;
+  fileName?: string | null;
+  fileSize?: number | null;
 };
 
 export async function createItem(userId: string, data: CreateItemData): Promise<ItemDetail> {
@@ -23,6 +27,9 @@ export async function createItem(userId: string, data: CreateItemData): Promise<
       content: data.content,
       url: data.url,
       language: data.language,
+      fileUrl: data.fileUrl ?? null,
+      fileName: data.fileName ?? null,
+      fileSize: data.fileSize ?? null,
       userId,
       itemTypeId: itemType.id,
       tags: {
@@ -47,6 +54,9 @@ export async function createItem(userId: string, data: CreateItemData): Promise<
     content: item.content,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -108,6 +118,9 @@ export async function updateItem(
     content: item.content,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -125,6 +138,9 @@ export type ItemDetail = {
   content: string | null;
   language: string | null;
   url: string | null;
+  fileUrl: string | null;
+  fileName: string | null;
+  fileSize: number | null;
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
@@ -143,6 +159,11 @@ export async function deleteItem(id: string, userId: string): Promise<boolean> {
   if (!existing) return false;
 
   await prisma.item.delete({ where: { id } });
+
+  if (existing.fileUrl) {
+    await deleteFromR2(existing.fileUrl).catch(() => {});
+  }
+
   return true;
 }
 
@@ -165,6 +186,9 @@ export async function getItemById(id: string, userId: string): Promise<ItemDetai
     content: item.content,
     language: item.language,
     url: item.url,
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    fileSize: item.fileSize,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
