@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import CodeEditor from '@/components/ui/CodeEditor';
 import { createItem } from '@/actions/items';
 
 const SELECTABLE_TYPES = [
@@ -22,7 +23,8 @@ const SELECTABLE_TYPES = [
   { name: 'link', label: 'Link', icon: 'Link', color: '#10b981' },
 ] as const;
 
-type TypeName = (typeof SELECTABLE_TYPES)[number]['name'];
+export type TypeName = (typeof SELECTABLE_TYPES)[number]['name'];
+export { SELECTABLE_TYPES };
 
 const TEXT_TYPES: TypeName[] = ['snippet', 'prompt', 'command', 'note'];
 const CODE_TYPES: TypeName[] = ['snippet', 'command'];
@@ -49,18 +51,19 @@ const DEFAULT_FORM: FormState = {
 interface ItemCreateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialType?: TypeName;
 }
 
-export default function ItemCreateDialog({ open, onOpenChange }: ItemCreateDialogProps) {
+export default function ItemCreateDialog({ open, onOpenChange, initialType = 'snippet' }: ItemCreateDialogProps) {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<TypeName>('snippet');
+  const [selectedType, setSelectedType] = useState<TypeName>(initialType);
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
   const [saving, setSaving] = useState(false);
 
   function handleOpenChange(value: boolean) {
     if (!value) {
       setForm(DEFAULT_FORM);
-      setSelectedType('snippet');
+      setSelectedType(initialType);
     }
     onOpenChange(value);
   }
@@ -104,7 +107,7 @@ export default function ItemCreateDialog({ open, onOpenChange }: ItemCreateDialo
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>New Item</DialogTitle>
         </DialogHeader>
@@ -165,23 +168,7 @@ export default function ItemCreateDialog({ open, onOpenChange }: ItemCreateDialo
             />
           </div>
 
-          {/* Content — text types only */}
-          {TEXT_TYPES.includes(selectedType) && (
-            <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-                Content
-              </label>
-              <textarea
-                className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring"
-                rows={6}
-                value={form.content}
-                onChange={(e) => set('content', e.target.value)}
-                placeholder="Content"
-              />
-            </div>
-          )}
-
-          {/* Language — snippet/command only */}
+          {/* Language — snippet/command only (before content so it appears in editor header) */}
           {CODE_TYPES.includes(selectedType) && (
             <div>
               <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
@@ -193,6 +180,30 @@ export default function ItemCreateDialog({ open, onOpenChange }: ItemCreateDialo
                 onChange={(e) => set('language', e.target.value)}
                 placeholder="e.g. typescript, python"
               />
+            </div>
+          )}
+
+          {/* Content — text types only */}
+          {TEXT_TYPES.includes(selectedType) && (
+            <div>
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                Content
+              </label>
+              {CODE_TYPES.includes(selectedType) ? (
+                <CodeEditor
+                  value={form.content}
+                  language={form.language || undefined}
+                  onChange={(val) => set('content', val)}
+                />
+              ) : (
+                <textarea
+                  className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring"
+                  rows={6}
+                  value={form.content}
+                  onChange={(e) => set('content', e.target.value)}
+                  placeholder="Content"
+                />
+              )}
             </div>
           )}
 

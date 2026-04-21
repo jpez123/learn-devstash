@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { auth } from '@/auth';
 import { getItemsByType } from '@/lib/db/items';
 import ItemCard from '@/components/items/ItemCard';
+import ItemsTypeHeader from '@/components/items/ItemsTypeHeader';
 
 const VALID_TYPE_SLUGS = ['snippets', 'prompts', 'commands', 'notes', 'files', 'images', 'links'];
 
@@ -31,12 +32,7 @@ export default async function ItemsTypePage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">{slugToLabel(type)}</h1>
-        <p className="text-sm text-muted-foreground">
-          {items.length} {items.length === 1 ? 'item' : 'items'}
-        </p>
-      </div>
+      <ItemsTypeHeader typeName={typeName} label={slugToLabel(type)} itemCount={items.length} />
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16 text-center">

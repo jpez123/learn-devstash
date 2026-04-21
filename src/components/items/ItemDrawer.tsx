@@ -21,6 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import CodeEditor from '@/components/ui/CodeEditor';
 import { updateItem, deleteItem } from '@/actions/items';
 import type { ItemDetail } from '@/lib/db/items';
 
@@ -286,13 +287,21 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                   {TEXT_TYPES.includes(item.itemType.name) && (
                     <section>
                       <SectionLabel>Content</SectionLabel>
-                      <textarea
-                        className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring"
-                        rows={8}
-                        value={editState.content}
-                        onChange={(e) => setEditState((s) => ({ ...s, content: e.target.value }))}
-                        placeholder="Content"
-                      />
+                      {CODE_TYPES.includes(item.itemType.name) ? (
+                        <CodeEditor
+                          value={editState.content}
+                          language={editState.language || undefined}
+                          onChange={(val) => setEditState((s) => ({ ...s, content: val }))}
+                        />
+                      ) : (
+                        <textarea
+                          className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-ring"
+                          rows={8}
+                          value={editState.content}
+                          onChange={(e) => setEditState((s) => ({ ...s, content: e.target.value }))}
+                          placeholder="Content"
+                        />
+                      )}
                     </section>
                   )}
 
@@ -349,9 +358,17 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                   {item.content && (
                     <section>
                       <SectionLabel>Content</SectionLabel>
-                      <pre className="overflow-x-auto rounded-md bg-accent/60 p-4 text-xs leading-relaxed text-foreground whitespace-pre-wrap break-words">
-                        <code>{item.content}</code>
-                      </pre>
+                      {CODE_TYPES.includes(item.itemType.name) ? (
+                        <CodeEditor
+                          value={item.content}
+                          language={item.language || undefined}
+                          readOnly
+                        />
+                      ) : (
+                        <pre className="overflow-x-auto rounded-md bg-accent/60 p-4 text-xs leading-relaxed text-foreground whitespace-pre-wrap break-words">
+                          <code>{item.content}</code>
+                        </pre>
+                      )}
                     </section>
                   )}
 

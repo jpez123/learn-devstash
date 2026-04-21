@@ -1,16 +1,26 @@
-# Current Feature
+# Current Feature: Code Editor
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
-<!-- Add goals here -->
+- Create a `CodeEditor` component using Monaco Editor with dark theme
+- Replace `Textarea` with `CodeEditor` for snippet and command item types only
+- Keep `Textarea` for notes, prompts, and other non-code types
+- Add macOS-style window dots (red/yellow/green) at the top of the editor
+- Add a quick copy button in the editor header
+- Display the selected language in the editor header next to the copy button
+- Support both display (readonly) and edit modes
+- Make editor height fluid with a max height of 400px and a scrollbar that matches the dark theme
 
 ## Notes
 
-<!-- Add notes here -->
+- Monaco Editor should use a dark theme consistent with the app's dark-first design
+- Language displayed in the header comes from the item's `language` field
+- This affects the Item Drawer (view + edit modes) — snippets and commands get `CodeEditor`, everything else keeps `Textarea`
+- Readonly mode is for viewing; edit mode enables typing in the editor
 
 ## History
 
