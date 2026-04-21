@@ -1,28 +1,16 @@
-# Current Feature: Markdown Editor
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create `MarkdownEditor` component with Write/Preview tabs and copy button in header
-- Replace `Textarea` with `MarkdownEditor` for **notes and prompts only** (keep `CodeEditor` for snippets/commands)
-- Support readonly mode (Preview tab only) and edit mode (Write tab default, Preview available)
-- Use `react-markdown` + `remark-gfm` for GitHub Flavored Markdown rendering
-- Match existing dark theme styling (`bg-[#1e1e1e]` container, `bg-[#2d2d2d]` header)
-- Style all markdown elements: headings, code blocks, inline code, lists, blockquotes, links, tables
-- Use `.markdown-preview` CSS class for reliable dark mode styling
-- Fluid height up to 400px, matching `CodeEditor` behavior
-- Integrate into `NewItemDialog` and `ItemDrawer` (edit + view modes) for note and prompt types
+<!-- Add goals here -->
 
 ## Notes
 
-- Spec: `context/features/markdown-editor-spec.md`
-- `CodeEditor` (Monaco) stays unchanged for snippet and command types
-- In readonly/view mode: only show Preview tab (no Write tab)
-- In edit mode: default to Write tab, Preview tab available
-- Copy button in header matches `CodeEditor` style
+<!-- Add notes here -->
 
 ## History
 
@@ -55,3 +43,4 @@ In Progress
 - **2026-04-14** — Completed Item Delete: Delete button in item drawer opens shadcn AlertDialog confirmation modal showing item title with irreversible warning; deleteItem DB function (src/lib/db/items.ts) with ownership check + prisma.item.delete (cascades tags/collections); deleteItem server action (src/actions/items.ts) with auth check; on confirm: closes drawer, success toast, router.refresh(); on error: error toast; unit tests for DB function and server action
 - **2026-04-14** — Completed Item Create: "New Item" button in top bar opens shadcn Dialog; type selector (snippet, prompt, command, note, link) with color-coded active state; conditional fields (content for text types, language for snippet/command, URL for link); createItem DB function (src/lib/db/items.ts) resolves type by name with isSystem check + tag connectOrCreate; createItem server action (src/actions/items.ts) with Zod validation (type enum, URL validation, title required); toast on success, modal resets and closes, router.refresh(); unit tests for DB function and server action
 - **2026-04-20** — Completed Code Editor: Monaco Editor component (src/components/ui/CodeEditor.tsx) with vs-dark theme, macOS window dots, language label (falls back to "plaintext"), copy button, fluid height up to 400px; replaces textarea for snippet and command types in ItemDrawer (view + edit modes) and ItemCreateDialog; language field moved above content in create modal; added ItemsTypeHeader (src/components/items/ItemsTypeHeader.tsx) with type-colored add button on /items/[type] pages that preselects the type in the create dialog; file/image types excluded (Pro-only)
+- **2026-04-21** — Completed Markdown Editor: MarkdownEditor component (src/components/ui/MarkdownEditor.tsx) with Write/Preview tabs, macOS window dots, copy button; react-markdown + remark-gfm for GFM rendering; readonly mode shows Preview only; full dark-theme .markdown-preview CSS (headings, code blocks, inline code, lists, blockquotes, links, tables, hr); 6px thin scrollbars matching CodeEditor style; replaces textarea for note and prompt types in ItemDrawer (view + edit modes) and ItemCreateDialog; snippets and commands keep CodeEditor unchanged
