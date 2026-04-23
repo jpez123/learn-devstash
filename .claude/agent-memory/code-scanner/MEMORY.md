@@ -1,1 +1,1 @@
-- [DevStash Architecture Overview](project_architecture.md) — Auth not yet wired up; DEMO_EMAIL pattern is intentional dev scaffolding; no API routes or actions yet
+- [DevStash Architecture Overview](project_architecture.md) — Auth wired up (NextAuth v5); dashboard uses session.user.id; second-audit remaining issues documented
