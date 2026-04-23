@@ -1,23 +1,12 @@
-# Current Feature: File List View
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Update `/items/files` to display as a single-column list instead of grid cards
-- Each row shows: file icon (by extension), file name, file size, upload date, download button
-- Row hover highlight
-- Click row opens ItemDrawer
-- Download button triggers direct download (stop propagation)
-- Responsive: stack info vertically on mobile
-
 ## Notes
-
-- Layout should resemble Google Drive/Dropbox file list style
-- File icon should vary by file extension
-- Download button must stop click propagation so it doesn't open the drawer
 
 ## History
 
@@ -51,3 +40,4 @@ In Progress
 - **2026-04-21** — Completed Markdown Editor: MarkdownEditor component (src/components/ui/MarkdownEditor.tsx) with Write/Preview tabs, macOS window dots, copy button; react-markdown + remark-gfm for GFM rendering; readonly mode shows Preview only; full dark-theme .markdown-preview CSS (headings, code blocks, inline code, lists, blockquotes, links, tables, hr); 6px thin scrollbars matching CodeEditor style; replaces textarea for note and prompt types in ItemDrawer (view + edit modes) and ItemCreateDialog; snippets and commands keep CodeEditor unchanged
 - **2026-04-21** — Completed File & Image Upload (Cloudflare R2): installed @aws-sdk/client-s3; created src/lib/r2.ts (upload/delete/get helpers); POST /api/upload with auth, MIME type validation, and size limits (5 MB images, 10 MB files); GET /api/download proxy with userId-prefix ownership check; FileUpload component with drag-and-drop, XHR progress bar, and file info display; ItemCreateDialog now includes file and image types with FileUpload; ItemDrawer shows image preview, file info card, and Download button for file types; deleteItem cleans up R2 object on deletion; ItemDetail type extended with fileUrl, fileName, fileSize
 - **2026-04-22** — Completed Image Gallery View: new ImageCard component with aspect-video thumbnail, object-cover fill, and 5% hover zoom (300ms transition); /items/images now renders ImageCard grid (3 columns) instead of standard ItemCard; added fileUrl field to ItemWithMeta type and all three list DB functions (getPinnedItems, getItemsByType, getRecentItems)
+- **2026-04-22** — Completed File List View: new FileListRow component with file icon by extension (image/video/audio/code/text/archive/generic), file name, size, upload date, download button (stops propagation); /items/files now renders single-column FileListRow list instead of card grid; responsive stacking on mobile; added fileName/fileSize to ItemWithMeta type and all three list DB query mappings
