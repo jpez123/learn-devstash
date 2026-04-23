@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { getItemsByType } from '@/lib/db/items';
 import ItemCard from '@/components/items/ItemCard';
 import ImageCard from '@/components/items/ImageCard';
+import FileListRow from '@/components/items/FileListRow';
 import ItemsTypeHeader from '@/components/items/ItemsTypeHeader';
 
 const VALID_TYPE_SLUGS = ['snippets', 'prompts', 'commands', 'notes', 'files', 'images', 'links'];
@@ -43,6 +44,12 @@ export default async function ItemsTypePage({
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <ImageCard key={item.id} item={item} />
+          ))}
+        </div>
+      ) : typeName === 'file' ? (
+        <div className="flex flex-col gap-2">
+          {items.map((item) => (
+            <FileListRow key={item.id} item={item} />
           ))}
         </div>
       ) : (
