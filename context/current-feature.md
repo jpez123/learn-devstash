@@ -1,16 +1,10 @@
-# Current Feature: Image Gallery View
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
-
-- Create an image thumbnail card to replace the current item card on the images page
-- Show an image grid/gallery with 3 columns
-- Display image thumbnail with 16:9 aspect ratio (`aspect-video`)
-- Use `object-cover` to fill the card (may crop edges)
-- Subtle hover zoom effect (5% scale with 300ms transition)
 
 ## Notes
 
@@ -45,3 +39,4 @@ In Progress
 - **2026-04-20** — Completed Code Editor: Monaco Editor component (src/components/ui/CodeEditor.tsx) with vs-dark theme, macOS window dots, language label (falls back to "plaintext"), copy button, fluid height up to 400px; replaces textarea for snippet and command types in ItemDrawer (view + edit modes) and ItemCreateDialog; language field moved above content in create modal; added ItemsTypeHeader (src/components/items/ItemsTypeHeader.tsx) with type-colored add button on /items/[type] pages that preselects the type in the create dialog; file/image types excluded (Pro-only)
 - **2026-04-21** — Completed Markdown Editor: MarkdownEditor component (src/components/ui/MarkdownEditor.tsx) with Write/Preview tabs, macOS window dots, copy button; react-markdown + remark-gfm for GFM rendering; readonly mode shows Preview only; full dark-theme .markdown-preview CSS (headings, code blocks, inline code, lists, blockquotes, links, tables, hr); 6px thin scrollbars matching CodeEditor style; replaces textarea for note and prompt types in ItemDrawer (view + edit modes) and ItemCreateDialog; snippets and commands keep CodeEditor unchanged
 - **2026-04-21** — Completed File & Image Upload (Cloudflare R2): installed @aws-sdk/client-s3; created src/lib/r2.ts (upload/delete/get helpers); POST /api/upload with auth, MIME type validation, and size limits (5 MB images, 10 MB files); GET /api/download proxy with userId-prefix ownership check; FileUpload component with drag-and-drop, XHR progress bar, and file info display; ItemCreateDialog now includes file and image types with FileUpload; ItemDrawer shows image preview, file info card, and Download button for file types; deleteItem cleans up R2 object on deletion; ItemDetail type extended with fileUrl, fileName, fileSize
+- **2026-04-22** — Completed Image Gallery View: new ImageCard component with aspect-video thumbnail, object-cover fill, and 5% hover zoom (300ms transition); /items/images now renders ImageCard grid (3 columns) instead of standard ItemCard; added fileUrl field to ItemWithMeta type and all three list DB functions (getPinnedItems, getItemsByType, getRecentItems)
