@@ -239,6 +239,8 @@ export type ItemWithMeta = {
   id: string;
   title: string;
   description: string | null;
+  content: string | null;
+  url: string | null;
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
@@ -267,6 +269,8 @@ export async function getPinnedItems(userId: string): Promise<ItemWithMeta[]> {
     id: item.id,
     title: item.title,
     description: item.description,
+    content: item.content,
+    url: item.url,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -295,6 +299,8 @@ export async function getItemsByType(userId: string, typeName: string): Promise<
     id: item.id,
     title: item.title,
     description: item.description,
+    content: item.content,
+    url: item.url,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
@@ -321,6 +327,8 @@ export async function getRecentItems(userId: string, limit = 10): Promise<ItemWi
     id: item.id,
     title: item.title,
     description: item.description,
+    content: item.content,
+    url: item.url,
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
