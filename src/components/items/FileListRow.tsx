@@ -3,6 +3,7 @@
 import { Download, File, FileCode, FileImage, FileText, FileVideo, FileAudio, Archive } from 'lucide-react';
 import { useItemDrawer } from '@/components/items/ItemDrawerProvider';
 import { ItemWithMeta } from '@/lib/db/items';
+import { formatFileSize } from '@/lib/utils';
 
 function getFileIcon(fileName: string | null) {
   if (!fileName) return <File size={20} className="text-muted-foreground" />;
@@ -22,12 +23,6 @@ function getFileIcon(fileName: string | null) {
   return <File size={20} className="text-muted-foreground" />;
 }
 
-function formatFileSize(bytes: number | null): string {
-  if (bytes === null) return '—';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });

@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { Upload, X, File as FileIcon, Image as ImageIcon } from 'lucide-react';
+import { formatFileSize } from '@/lib/utils';
 
 export type UploadResult = {
   key: string;
@@ -18,12 +19,6 @@ interface FileUploadProps {
 
 const IMAGE_ACCEPT = '.png,.jpg,.jpeg,.gif,.webp,.svg';
 const FILE_ACCEPT = '.pdf,.txt,.md,.json,.yaml,.yml,.xml,.csv,.toml,.ini';
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 export default function FileUpload({ accept, onUpload, onClear, uploadedFile }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -95,7 +90,7 @@ export default function FileUpload({ accept, onUpload, onClear, uploadedFile }: 
         <Icon size={16} className="shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">{uploadedFile.fileName}</p>
-          <p className="text-xs text-muted-foreground">{formatBytes(uploadedFile.fileSize)}</p>
+          <p className="text-xs text-muted-foreground">{formatFileSize(uploadedFile.fileSize)}</p>
         </div>
         <button
           type="button"

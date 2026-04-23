@@ -19,11 +19,9 @@ export default function TypeIcon({
   color: string;
   size?: number;
 }) {
-  const Icon = ICON_MAP[iconName] ?? (() => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(`TypeIcon: unknown icon "${iconName}", falling back to File`);
-    }
-    return File;
-  })();
+  if (process.env.NODE_ENV !== 'production' && !ICON_MAP[iconName]) {
+    console.warn(`TypeIcon: unknown icon "${iconName}", falling back to File`);
+  }
+  const Icon = ICON_MAP[iconName] ?? File;
   return <Icon size={size} style={{ color }} />;
 }
