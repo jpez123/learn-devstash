@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { auth } from '@/auth';
 import { getItemsByType } from '@/lib/db/items';
 import ItemCard from '@/components/items/ItemCard';
+import ImageCard from '@/components/items/ImageCard';
 import ItemsTypeHeader from '@/components/items/ItemsTypeHeader';
 
 const VALID_TYPE_SLUGS = ['snippets', 'prompts', 'commands', 'notes', 'files', 'images', 'links'];
@@ -37,6 +38,12 @@ export default async function ItemsTypePage({
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16 text-center">
           <p className="text-sm text-muted-foreground">No {type} yet.</p>
+        </div>
+      ) : typeName === 'image' ? (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item) => (
+            <ImageCard key={item.id} item={item} />
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">

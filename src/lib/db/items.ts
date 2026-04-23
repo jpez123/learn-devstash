@@ -242,6 +242,7 @@ export type ItemWithMeta = {
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
+  fileUrl: string | null;
   itemType: {
     name: string;
     icon: string;
@@ -267,6 +268,7 @@ export async function getPinnedItems(userId: string): Promise<ItemWithMeta[]> {
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
+    fileUrl: item.fileUrl,
     itemType: item.itemType,
     tags: item.tags.map((t) => t.tag.name),
   }));
@@ -292,6 +294,7 @@ export async function getItemsByType(userId: string, typeName: string): Promise<
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
+    fileUrl: item.fileUrl,
     itemType: item.itemType,
     tags: item.tags.map((t) => t.tag.name),
   }));
@@ -315,6 +318,7 @@ export async function getRecentItems(userId: string, limit = 10): Promise<ItemWi
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
+    fileUrl: item.fileUrl,
     itemType: item.itemType,
     tags: item.tags.map((t) => t.tag.name),
   }));
