@@ -86,12 +86,15 @@ export async function updateItem(
     return { success: false, error: parsed.error.issues[0]?.message ?? 'Validation error' };
   }
 
-  const updated = await updateItemDb(itemId, session.user.id, parsed.data);
-  if (!updated) {
-    return { success: false, error: 'Item not found or access denied' };
+  try {
+    const updated = await updateItemDb(itemId, session.user.id, parsed.data);
+    if (!updated) {
+      return { success: false, error: 'Item not found or access denied' };
+    }
+    return { success: true, data: updated };
+  } catch {
+    return { success: false, error: 'Failed to update item' };
   }
-
-  return { success: true, data: updated };
 }
 
 export async function deleteItem(itemId: string): Promise<ActionResult<null>> {
@@ -100,10 +103,13 @@ export async function deleteItem(itemId: string): Promise<ActionResult<null>> {
     return { success: false, error: 'Unauthorized' };
   }
 
-  const deleted = await deleteItemDb(itemId, session.user.id);
-  if (!deleted) {
-    return { success: false, error: 'Item not found or access denied' };
+  try {
+    const deleted = await deleteItemDb(itemId, session.user.id);
+    if (!deleted) {
+      return { success: false, error: 'Item not found or access denied' };
+    }
+    return { success: true, data: null };
+  } catch {
+    return { success: false, error: 'Failed to delete item' };
   }
-
-  return { success: true, data: null };
 }
