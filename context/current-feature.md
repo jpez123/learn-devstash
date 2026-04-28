@@ -10,6 +10,8 @@ Not Started
 
 ## History
 
+- **2026-04-27** — Completed Collection Create: "New Collection" button in top bar opens shadcn Dialog; name (required) + description (optional) fields; createCollection DB function (src/lib/db/collections.ts) with CollectionDetail type; createCollection server action (src/actions/collections.ts) with Zod validation + auth check; toast on success/error; router.refresh() after creation; logo in top bar is now a link to /dashboard; unit tests for server action (5 cases)
+
 - **2026-03-23** — Initial Next.js project setup (Next.js 16, React 19, TypeScript, Tailwind CSS v4, React Compiler)
 - **2026-03-23** — Completed Dashboard UI Phase 1: ShadCN UI setup, /dashboard route, dark mode, top bar with logo/search/actions, responsive sidebar placeholder
 - **2026-03-25** — Completed Dashboard UI Phase 2: Collapsible sidebar with icon-only mode, item type links, collapsible Types/Collections sections, favorite collections, all collections, user avatar area, mobile drawer with slide animation, sidebar toggle inside sidebar, mobile hamburger in top bar

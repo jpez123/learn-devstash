@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import Link from "next/link";
 import { Search, Plus, Package, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSidebar } from "./SidebarProvider";
 import ItemCreateDialog from "@/components/items/ItemCreateDialog";
+import CollectionCreateDialog from "@/components/collections/CollectionCreateDialog";
 
 export default function TopBar() {
   const { toggleMobile } = useSidebar();
   const [createOpen, setCreateOpen] = useState(false);
+  const [createCollectionOpen, setCreateCollectionOpen] = useState(false);
 
   return (
     <>
@@ -23,10 +26,12 @@ export default function TopBar() {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-            <Package className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <span className="hidden font-semibold text-foreground sm:block">DevStash</span>
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+              <Package className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="hidden font-semibold text-foreground sm:block">DevStash</span>
+          </Link>
         </div>
 
         {/* Center: Search */}
@@ -42,7 +47,7 @@ export default function TopBar() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 w-48 justify-end shrink-0">
-          <Button size="sm" variant="outline" className="hidden sm:flex">
+          <Button size="sm" variant="outline" className="hidden sm:flex" onClick={() => setCreateCollectionOpen(true)}>
             New Collection
           </Button>
           <Button size="sm" onClick={() => setCreateOpen(true)}>
@@ -53,6 +58,7 @@ export default function TopBar() {
       </header>
 
       <ItemCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
+      <CollectionCreateDialog open={createCollectionOpen} onOpenChange={setCreateCollectionOpen} />
     </>
   );
 }
