@@ -6,6 +6,7 @@ import TypeIcon from '@/components/ui/TypeIcon';
 import ItemCard from '@/components/items/ItemCard';
 import ImageCard from '@/components/items/ImageCard';
 import FileListRow from '@/components/items/FileListRow';
+import CollectionActions from '@/components/collections/CollectionActions';
 
 export default async function CollectionPage({
   params,
@@ -52,6 +53,14 @@ export default async function CollectionPage({
             )}
           </div>
         </div>
+        <CollectionActions
+          collection={{
+            id: collection.id,
+            name: collection.name,
+            description: collection.description,
+            isFavorite: collection.isFavorite,
+          }}
+        />
       </div>
 
       {collection.itemCount === 0 ? (
