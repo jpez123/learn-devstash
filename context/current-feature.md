@@ -1,25 +1,12 @@
-# Current Feature: Global Search / Command Palette
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Open command palette with Cmd+K (Mac) / Ctrl+K (Windows)
-- Fuzzy search across all items and collections with grouped results
-- Keyboard navigation (arrow keys, Enter to select)
-- Show item type icon for items and item count for collections in results
-- Navigate to item drawer on item select, collection page on collection select
-- TopBar search input opens palette on click
-- Show ⌘K hint in search input placeholder
-
 ## Notes
-
-- Use shadcn `cmdk` component (Command)
-- Client-side fuzzy search — no server round-trips per keystroke
-- Pre-fetch searchable data on app load (items: id, title, type, content preview; collections: id, name, itemCount)
-- Reuse existing data fetching functions from src/lib/db/
 
 ## History
 
@@ -58,3 +45,4 @@ In Progress
 - **2026-04-27** — Completed Add Item to Collections: CollectionPicker component (scrollable checkbox list with folder icon); fetched via getCollections server action + getUserCollections DB function; shown in ItemCreateDialog (fetched on open) and ItemDrawer edit mode (fetched on enterEditMode via useEditMode); createItem and updateItem DB functions accept collectionIds and sync ItemCollection join table (deleteMany + create on update); EditState extended with collectionIds; all existing tests updated with collectionIds field
 - **2026-04-27** — Completed Collections Pages: getAllCollections and getCollectionWithItems DB functions added to collections.ts (refactored getRecentCollections into shared helper); /collections page shows all user collections in a 3-column CollectionCard grid with empty state; /collections/[id] page shows collection header (name, description, item count, type icons, favorite heart) and items dispatched by type (ImageCard grid, FileListRow list, ItemCard grid); sidebar "View all collections" and all CollectionCard links were already correctly wired to these routes
 - **2026-04-27** — Completed Collection Actions: updateCollection and deleteCollection DB functions and server actions; CollectionActions component with Edit/Delete/Favorite buttons on /collections/[id] header (favorite UI-only); CollectionEditDialog for editing name and description; CollectionCard refactored from Link to client component with 3-dots dropdown (Edit, Delete, Favorite — favorite UI-only); delete confirms with AlertDialog, removes collection and join records without deleting items, redirects to /collections; unit tests for both new actions (9 cases)
+- **2026-04-28** — Completed Global Search / Command Palette: shadcn cmdk Command palette opens via Cmd+K or TopBar click trigger with ⌘K hint; grouped results (Items with type icon + content preview, Collections with item count); case-insensitive substring filter replacing cmdk default fuzzy to prevent false positives; getSearchData DB function pre-fetches all items and collections at layout level; SearchProvider context holds open state and data; item select opens ItemDrawer, collection select navigates to /collections/[id]; unit tests for getSearchData (7 cases)
