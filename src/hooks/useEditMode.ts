@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { updateItem, deleteItem } from '@/actions/items';
+import { getCollections } from '@/actions/collections';
 import type { ItemDetail } from '@/lib/db/items';
+import type { CollectionSummary } from '@/lib/db/collections';
 
 export type EditState = {
   title: string;
@@ -13,6 +15,7 @@ export type EditState = {
   url: string;
   language: string;
   tags: string;
+  collectionIds: string[];
 };
 
 const EMPTY_EDIT_STATE: EditState = {
@@ -22,6 +25,7 @@ const EMPTY_EDIT_STATE: EditState = {
   url: '',
   language: '',
   tags: '',
+  collectionIds: [],
 };
 
 export function useEditMode({
@@ -41,6 +45,7 @@ export function useEditMode({
   const [saving, setSaving] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [availableCollections, setAvailableCollections] = useState<CollectionSummary[]>([]);
 
   const isEditMode = editingId === itemId;
 
@@ -53,8 +58,12 @@ export function useEditMode({
       url: item.url ?? '',
       language: item.language ?? '',
       tags: item.tags.join(', '),
+      collectionIds: item.collections.map((c) => c.id),
     });
     setEditingId(itemId);
+    getCollections().then((result) => {
+      if (result.success) setAvailableCollections(result.data);
+    });
   }
 
   function cancelEdit() {
@@ -77,6 +86,7 @@ export function useEditMode({
       url: editState.url || null,
       language: editState.language || null,
       tags,
+      collectionIds: editState.collectionIds,
     });
 
     setSaving(false);
@@ -115,6 +125,7 @@ export function useEditMode({
     deleteDialogOpen,
     setDeleteDialogOpen,
     deleting,
+    availableCollections,
     enterEditMode,
     cancelEdit,
     handleSave,

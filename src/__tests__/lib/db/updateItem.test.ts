@@ -47,6 +47,7 @@ describe('updateItem', () => {
       url: null,
       language: null,
       tags: [],
+      collectionIds: [],
     });
     expect(result).toBeNull();
     expect(mockUpdate).not.toHaveBeenCalled();
@@ -63,6 +64,7 @@ describe('updateItem', () => {
       url: null,
       language: 'typescript',
       tags: ['react'],
+      collectionIds: [],
     });
 
     expect(mockUpdate).toHaveBeenCalledWith(
@@ -90,6 +92,7 @@ describe('updateItem', () => {
       url: null,
       language: 'typescript',
       tags: ['react'],
+      collectionIds: [],
     });
 
     expect(result).toMatchObject({
@@ -111,6 +114,7 @@ describe('updateItem', () => {
       url: null,
       language: null,
       tags: ['newtag'],
+      collectionIds: [],
     });
 
     const callArgs = mockUpdate.mock.calls[0][0];

@@ -2,8 +2,8 @@
 
 import { z } from 'zod';
 import { auth } from '@/auth';
-import { createCollection as createCollectionDb } from '@/lib/db/collections';
-import type { CollectionDetail } from '@/lib/db/collections';
+import { createCollection as createCollectionDb, getUserCollections } from '@/lib/db/collections';
+import type { CollectionDetail, CollectionSummary } from '@/lib/db/collections';
 
 type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 
@@ -31,5 +31,19 @@ export async function createCollection(formData: {
     return { success: true, data: collection };
   } catch {
     return { success: false, error: 'Failed to create collection' };
+  }
+}
+
+export async function getCollections(): Promise<ActionResult<CollectionSummary[]>> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
+  try {
+    const collections = await getUserCollections(session.user.id);
+    return { success: true, data: collections };
+  } catch {
+    return { success: false, error: 'Failed to fetch collections' };
   }
 }

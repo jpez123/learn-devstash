@@ -66,47 +66,47 @@ const createdItem = {
 describe('createItem action', () => {
   it('returns unauthorized when no session', async () => {
     mockAuth.mockResolvedValue(null as never);
-    const result = await createItem({ typeName: 'snippet', title: 'Test', tags: [] });
+    const result = await createItem({ typeName: 'snippet', title: 'Test', tags: [], collectionIds: [] });
     expect(result).toEqual({ success: false, error: 'Unauthorized' });
   });
 
   it('returns error when title is empty', async () => {
     mockAuth.mockResolvedValue(validSession as never);
-    const result = await createItem({ typeName: 'snippet', title: '   ', tags: [] });
+    const result = await createItem({ typeName: 'snippet', title: '   ', tags: [], collectionIds: [] });
     expect(result.success).toBe(false);
     expect((result as { success: false; error: string }).error).toContain('Title');
   });
 
   it('returns error when typeName is invalid', async () => {
     mockAuth.mockResolvedValue(validSession as never);
-    const result = await createItem({ typeName: 'custom', title: 'Test', tags: [] });
+    const result = await createItem({ typeName: 'custom', title: 'Test', tags: [], collectionIds: [] });
     expect(result.success).toBe(false);
   });
 
   it('returns error when url is invalid', async () => {
     mockAuth.mockResolvedValue(validSession as never);
-    const result = await createItem({ typeName: 'link', title: 'Test', url: 'not-a-url', tags: [] });
+    const result = await createItem({ typeName: 'link', title: 'Test', url: 'not-a-url', tags: [], collectionIds: [] });
     expect(result.success).toBe(false);
   });
 
   it('returns success with created item', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockCreateItemDb.mockResolvedValue(createdItem);
-    const result = await createItem({ typeName: 'snippet', title: 'New Snippet', tags: [] });
+    const result = await createItem({ typeName: 'snippet', title: 'New Snippet', tags: [], collectionIds: [] });
     expect(result).toEqual({ success: true, data: createdItem });
   });
 
   it('returns error when db throws', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockCreateItemDb.mockRejectedValue(new Error('DB error'));
-    const result = await createItem({ typeName: 'snippet', title: 'Test', tags: [] });
+    const result = await createItem({ typeName: 'snippet', title: 'Test', tags: [], collectionIds: [] });
     expect(result).toEqual({ success: false, error: 'Failed to create item' });
   });
 
   it('passes typeName and tags to db function', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockCreateItemDb.mockResolvedValue(createdItem);
-    await createItem({ typeName: 'prompt', title: 'My Prompt', tags: ['ai', 'gpt'] });
+    await createItem({ typeName: 'prompt', title: 'My Prompt', tags: ['ai', 'gpt'], collectionIds: [] });
     expect(mockCreateItemDb).toHaveBeenCalledWith(
       'user-1',
       expect.objectContaining({ typeName: 'prompt', tags: ['ai', 'gpt'] })
@@ -117,41 +117,41 @@ describe('createItem action', () => {
 describe('updateItem action', () => {
   it('returns unauthorized when no session', async () => {
     mockAuth.mockResolvedValue(null as never);
-    const result = await updateItem('item-1', { title: 'Test', tags: [] });
+    const result = await updateItem('item-1', { title: 'Test', tags: [], collectionIds: [] });
     expect(result).toEqual({ success: false, error: 'Unauthorized' });
   });
 
   it('returns error when title is empty', async () => {
     mockAuth.mockResolvedValue(validSession as never);
-    const result = await updateItem('item-1', { title: '   ', tags: [] });
+    const result = await updateItem('item-1', { title: '   ', tags: [], collectionIds: [] });
     expect(result.success).toBe(false);
     expect((result as { success: false; error: string }).error).toContain('Title');
   });
 
   it('returns error when url is invalid', async () => {
     mockAuth.mockResolvedValue(validSession as never);
-    const result = await updateItem('item-1', { title: 'Test', url: 'not-a-url', tags: [] });
+    const result = await updateItem('item-1', { title: 'Test', url: 'not-a-url', tags: [], collectionIds: [] });
     expect(result.success).toBe(false);
   });
 
   it('returns success with updated item', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockUpdateItemDb.mockResolvedValue(updatedItem);
-    const result = await updateItem('item-1', { title: 'Updated', tags: [] });
+    const result = await updateItem('item-1', { title: 'Updated', tags: [], collectionIds: [] });
     expect(result).toEqual({ success: true, data: updatedItem });
   });
 
   it('returns error when item not found (db returns null)', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockUpdateItemDb.mockResolvedValue(null);
-    const result = await updateItem('item-1', { title: 'Updated', tags: [] });
+    const result = await updateItem('item-1', { title: 'Updated', tags: [], collectionIds: [] });
     expect(result).toEqual({ success: false, error: 'Item not found or access denied' });
   });
 
   it('accepts empty url and converts to null', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockUpdateItemDb.mockResolvedValue(updatedItem);
-    await updateItem('item-1', { title: 'Test', url: '', tags: [] });
+    await updateItem('item-1', { title: 'Test', url: '', tags: [], collectionIds: [] });
     expect(mockUpdateItemDb).toHaveBeenCalledWith(
       'item-1',
       'user-1',
@@ -162,7 +162,7 @@ describe('updateItem action', () => {
   it('passes tags array to db function', async () => {
     mockAuth.mockResolvedValue(validSession as never);
     mockUpdateItemDb.mockResolvedValue(updatedItem);
-    await updateItem('item-1', { title: 'Test', tags: ['react', 'hooks'] });
+    await updateItem('item-1', { title: 'Test', tags: ['react', 'hooks'], collectionIds: [] });
     expect(mockUpdateItemDb).toHaveBeenCalledWith(
       'item-1',
       'user-1',

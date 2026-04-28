@@ -51,6 +51,7 @@ describe('createItem', () => {
         language: null,
         typeName: 'snippet',
         tags: [],
+        collectionIds: [],
       })
     ).rejects.toThrow('Unknown item type: snippet');
   });
@@ -67,6 +68,7 @@ describe('createItem', () => {
       language: 'typescript',
       typeName: 'snippet',
       tags: ['react'],
+      collectionIds: [],
     });
 
     expect(mockCreate).toHaveBeenCalledWith(
@@ -92,6 +94,7 @@ describe('createItem', () => {
       language: null,
       typeName: 'snippet',
       tags: [],
+      collectionIds: [],
     });
 
     expect(mockFindFirst).toHaveBeenCalledWith({
@@ -111,6 +114,7 @@ describe('createItem', () => {
       language: null,
       typeName: 'snippet',
       tags: ['react'],
+      collectionIds: [],
     });
 
     expect(result.tags).toEqual(['react']);
@@ -128,6 +132,7 @@ describe('createItem', () => {
       language: 'typescript',
       typeName: 'snippet',
       tags: [],
+      collectionIds: [],
     });
 
     expect(result).toMatchObject({

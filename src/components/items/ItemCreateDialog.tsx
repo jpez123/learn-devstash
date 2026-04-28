@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import TypeIcon from '@/components/ui/TypeIcon';
 import FileUpload, { type UploadResult } from '@/components/ui/FileUpload';
+import CollectionPicker from '@/components/ui/CollectionPicker';
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import CodeEditor from '@/components/ui/CodeEditor';
 import MarkdownEditor from '@/components/ui/MarkdownEditor';
 import { createItem } from '@/actions/items';
+import { getCollections } from '@/actions/collections';
+import type { CollectionSummary } from '@/lib/db/collections';
 
 const SELECTABLE_TYPES = [
   { name: 'snippet', label: 'Snippet', icon: 'Code', color: '#3b82f6' },
@@ -66,12 +69,23 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
   const [uploadedFile, setUploadedFile] = useState<UploadResult | null>(null);
   const [saving, setSaving] = useState(false);
+  const [collections, setCollections] = useState<CollectionSummary[]>([]);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      getCollections().then((result) => {
+        if (result.success) setCollections(result.data);
+      });
+    }
+  }, [open]);
 
   function handleOpenChange(value: boolean) {
     if (!value) {
       setForm(DEFAULT_FORM);
       setSelectedType(initialType);
       setUploadedFile(null);
+      setSelectedCollectionIds([]);
     }
     onOpenChange(value);
   }
@@ -102,6 +116,7 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
       url: form.url || null,
       language: form.language || null,
       tags,
+      collectionIds: selectedCollectionIds,
       fileUrl: uploadedFile?.key ?? null,
       fileName: uploadedFile?.fileName ?? null,
       fileSize: uploadedFile?.fileSize ?? null,
@@ -277,6 +292,18 @@ export default function ItemCreateDialog({ open, onOpenChange, initialType = 'sn
               placeholder="react, hooks, typescript"
             />
             <p className="mt-1 text-[11px] text-muted-foreground/60">Comma-separated</p>
+          </div>
+
+          {/* Collections */}
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Collections
+            </label>
+            <CollectionPicker
+              collections={collections}
+              selectedIds={selectedCollectionIds}
+              onChange={setSelectedCollectionIds}
+            />
           </div>
 
           <DialogFooter className="pt-2">

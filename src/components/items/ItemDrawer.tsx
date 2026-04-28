@@ -67,6 +67,7 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
     deleteDialogOpen,
     setDeleteDialogOpen,
     deleting,
+    availableCollections,
     enterEditMode,
     cancelEdit,
     handleSave,
@@ -107,7 +108,9 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                   <EditModeSection
                     typeName={item.itemType.name}
                     editState={editState}
+                    availableCollections={availableCollections}
                     onChange={(field, value) => setEditState((s) => ({ ...s, [field]: value }))}
+                    onCollectionIdsChange={(ids) => setEditState((s) => ({ ...s, collectionIds: ids }))}
                   />
                 ) : (
                   <ViewModeSection item={item} />

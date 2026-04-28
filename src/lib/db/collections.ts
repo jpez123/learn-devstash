@@ -1,5 +1,18 @@
 import { prisma } from '@/lib/prisma';
 
+export type CollectionSummary = {
+  id: string;
+  name: string;
+};
+
+export async function getUserCollections(userId: string): Promise<CollectionSummary[]> {
+  return prisma.collection.findMany({
+    where: { userId },
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
+  });
+}
+
 export type CollectionDetail = {
   id: string;
   name: string;

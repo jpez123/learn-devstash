@@ -17,6 +17,7 @@ const createItemSchema = z.object({
   ),
   language: z.string().trim().nullish().transform((v) => v ?? null),
   tags: z.array(z.string().trim().min(1)),
+  collectionIds: z.array(z.string()),
   fileUrl: z.string().nullish().transform((v) => v ?? null),
   fileName: z.string().nullish().transform((v) => v ?? null),
   fileSize: z.number().nullish().transform((v) => v ?? null),
@@ -30,6 +31,7 @@ export async function createItem(formData: {
   url?: string | null;
   language?: string | null;
   tags: string[];
+  collectionIds: string[];
   fileUrl?: string | null;
   fileName?: string | null;
   fileSize?: number | null;
@@ -61,6 +63,7 @@ const updateItemSchema = z.object({
   ),
   language: z.string().trim().nullish().transform((v) => v ?? null),
   tags: z.array(z.string().trim().min(1)),
+  collectionIds: z.array(z.string()),
 });
 
 type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
@@ -74,6 +77,7 @@ export async function updateItem(
     url?: string | null;
     language?: string | null;
     tags: string[];
+    collectionIds: string[];
   }
 ): Promise<ActionResult<ItemDetail>> {
   const session = await auth();

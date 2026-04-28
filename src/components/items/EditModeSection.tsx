@@ -2,7 +2,9 @@
 
 import CodeEditor from '@/components/ui/CodeEditor';
 import MarkdownEditor from '@/components/ui/MarkdownEditor';
+import CollectionPicker from '@/components/ui/CollectionPicker';
 import type { EditState } from '@/hooks/useEditMode';
+import type { CollectionSummary } from '@/lib/db/collections';
 
 const TEXT_TYPES = ['snippet', 'prompt', 'command', 'note'];
 const CODE_TYPES = ['snippet', 'command'];
@@ -20,10 +22,12 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 interface EditModeSectionProps {
   typeName: string;
   editState: EditState;
+  availableCollections: CollectionSummary[];
   onChange: (field: keyof EditState, value: string) => void;
+  onCollectionIdsChange: (ids: string[]) => void;
 }
 
-export default function EditModeSection({ typeName, editState, onChange }: EditModeSectionProps) {
+export default function EditModeSection({ typeName, editState, availableCollections, onChange, onCollectionIdsChange }: EditModeSectionProps) {
   return (
     <>
       <section>
@@ -97,6 +101,15 @@ export default function EditModeSection({ typeName, editState, onChange }: EditM
           placeholder="react, hooks, typescript"
         />
         <p className="mt-1 text-[11px] text-muted-foreground/60">Comma-separated</p>
+      </section>
+
+      <section>
+        <SectionLabel>Collections</SectionLabel>
+        <CollectionPicker
+          collections={availableCollections}
+          selectedIds={editState.collectionIds}
+          onChange={onCollectionIdsChange}
+        />
       </section>
     </>
   );

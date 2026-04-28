@@ -9,6 +9,7 @@ export type CreateItemData = {
   language: string | null;
   typeName: string;
   tags: string[];
+  collectionIds: string[];
   fileUrl?: string | null;
   fileName?: string | null;
   fileSize?: number | null;
@@ -39,6 +40,9 @@ export async function createItem(userId: string, data: CreateItemData): Promise<
           },
         })),
       },
+      collections: {
+        create: data.collectionIds.map((collectionId) => ({ collectionId })),
+      },
     },
     include: {
       itemType: { select: { name: true, icon: true, color: true } },
@@ -57,6 +61,7 @@ export type UpdateItemData = {
   url: string | null;
   language: string | null;
   tags: string[];
+  collectionIds: string[];
 };
 
 export async function updateItem(
@@ -85,6 +90,10 @@ export async function updateItem(
             },
           },
         })),
+      },
+      collections: {
+        deleteMany: {},
+        create: data.collectionIds.map((collectionId) => ({ collectionId })),
       },
     },
     include: {
