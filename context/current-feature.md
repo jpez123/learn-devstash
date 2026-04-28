@@ -1,24 +1,12 @@
-# Current Feature: Collections Pages
+# Current Feature
 
 ## Status
 
-Complete
+Not Started
 
 ## Goals
 
-- Create `/collections` page listing all user collections using existing CollectionCard components
-- Create `/collections/[id]` page showing items within a specific collection using existing item cards (ItemCard, ImageCard, FileListRow)
-- Link "View all collections" in the sidebar to `/collections`
-- Link all CollectionCard instances (dashboard + collections list) to `/collections/[id]`
-
 ## Notes
-
-- Reuse existing CollectionCard for the grid layout on `/collections`
-- Reuse existing ItemCard (text/link types), ImageCard (images), and FileListRow (files) on `/collections/[id]`
-- Both pages are protected routes under the dashboard layout
-- Need DB functions: `getAllCollections` (for /collections) and `getCollectionById` + `getItemsByCollection` (for /collections/[id])
-- Show collection name, description, item count, and type breakdown on the detail page header
-- Empty state handling for both pages
 
 ## History
 
@@ -55,3 +43,4 @@ Complete
 - **2026-04-22** — Completed File List View: new FileListRow component with file icon by extension (image/video/audio/code/text/archive/generic), file name, size, upload date, download button (stops propagation); /items/files now renders single-column FileListRow list instead of card grid; responsive stacking on mobile; added fileName/fileSize to ItemWithMeta type and all three list DB query mappings
 - **2026-04-27** — Completed Collection Create: "New Collection" button in top bar opens shadcn Dialog; name (required) + description (optional) fields; createCollection DB function (src/lib/db/collections.ts) with CollectionDetail type; createCollection server action (src/actions/collections.ts) with Zod validation + auth check; toast on success/error; router.refresh() after creation; logo in top bar is now a link to /dashboard; unit tests for server action (5 cases)
 - **2026-04-27** — Completed Add Item to Collections: CollectionPicker component (scrollable checkbox list with folder icon); fetched via getCollections server action + getUserCollections DB function; shown in ItemCreateDialog (fetched on open) and ItemDrawer edit mode (fetched on enterEditMode via useEditMode); createItem and updateItem DB functions accept collectionIds and sync ItemCollection join table (deleteMany + create on update); EditState extended with collectionIds; all existing tests updated with collectionIds field
+- **2026-04-27** — Completed Collections Pages: getAllCollections and getCollectionWithItems DB functions added to collections.ts (refactored getRecentCollections into shared helper); /collections page shows all user collections in a 3-column CollectionCard grid with empty state; /collections/[id] page shows collection header (name, description, item count, type icons, favorite heart) and items dispatched by type (ImageCard grid, FileListRow list, ItemCard grid); sidebar "View all collections" and all CollectionCard links were already correctly wired to these routes
