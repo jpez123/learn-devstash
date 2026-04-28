@@ -1,12 +1,24 @@
-# Current Feature
+# Current Feature: Collections Pages
 
 ## Status
 
-Not Started
+Complete
 
 ## Goals
 
+- Create `/collections` page listing all user collections using existing CollectionCard components
+- Create `/collections/[id]` page showing items within a specific collection using existing item cards (ItemCard, ImageCard, FileListRow)
+- Link "View all collections" in the sidebar to `/collections`
+- Link all CollectionCard instances (dashboard + collections list) to `/collections/[id]`
+
 ## Notes
+
+- Reuse existing CollectionCard for the grid layout on `/collections`
+- Reuse existing ItemCard (text/link types), ImageCard (images), and FileListRow (files) on `/collections/[id]`
+- Both pages are protected routes under the dashboard layout
+- Need DB functions: `getAllCollections` (for /collections) and `getCollectionById` + `getItemsByCollection` (for /collections/[id])
+- Show collection name, description, item count, and type breakdown on the detail page header
+- Empty state handling for both pages
 
 ## History
 

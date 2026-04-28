@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import type { ItemWithMeta } from '@/lib/db/items';
 
 export type CollectionSummary = {
   id: string;
@@ -102,7 +103,86 @@ export type CollectionWithMeta = {
   types: { icon: string; color: string }[];
 };
 
+export async function getAllCollections(userId: string): Promise<CollectionWithMeta[]> {
+  return getCollectionList(userId);
+}
+
 export async function getRecentCollections(userId: string, limit = 6): Promise<CollectionWithMeta[]> {
+  return getCollectionList(userId, limit);
+}
+
+export type CollectionWithItems = {
+  id: string;
+  name: string;
+  description: string | null;
+  isFavorite: boolean;
+  itemCount: number;
+  types: { icon: string; color: string }[];
+  items: ItemWithMeta[];
+};
+
+export async function getCollectionWithItems(
+  id: string,
+  userId: string
+): Promise<CollectionWithItems | null> {
+  const col = await prisma.collection.findFirst({
+    where: { id, userId },
+    include: {
+      items: {
+        orderBy: { addedAt: 'desc' },
+        include: {
+          item: {
+            include: {
+              itemType: { select: { name: true, icon: true, color: true } },
+              tags: { include: { tag: { select: { name: true } } } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!col) return null;
+
+  const typeCounts = new Map<string, { icon: string; color: string; count: number }>();
+  for (const ic of col.items) {
+    const t = ic.item.itemType;
+    const existing = typeCounts.get(t.icon);
+    if (existing) existing.count++;
+    else typeCounts.set(t.icon, { icon: t.icon, color: t.color, count: 1 });
+  }
+  const types = [...typeCounts.values()]
+    .sort((a, b) => b.count - a.count)
+    .map(({ icon, color }) => ({ icon, color }));
+
+  const items: ItemWithMeta[] = col.items.map((ic) => ({
+    id: ic.item.id,
+    title: ic.item.title,
+    description: ic.item.description,
+    content: ic.item.content,
+    url: ic.item.url,
+    isFavorite: ic.item.isFavorite,
+    isPinned: ic.item.isPinned,
+    createdAt: ic.item.createdAt,
+    fileUrl: ic.item.fileUrl,
+    fileName: ic.item.fileName,
+    fileSize: ic.item.fileSize,
+    itemType: ic.item.itemType,
+    tags: ic.item.tags.map((t) => t.tag.name),
+  }));
+
+  return {
+    id: col.id,
+    name: col.name,
+    description: col.description,
+    isFavorite: col.isFavorite,
+    itemCount: col.items.length,
+    types,
+    items,
+  };
+}
+
+async function getCollectionList(userId: string, limit?: number): Promise<CollectionWithMeta[]> {
   const collections = await prisma.collection.findMany({
     where: { userId },
     include: {
