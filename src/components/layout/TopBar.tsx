@@ -4,13 +4,14 @@ import { useState } from 'react';
 import Link from "next/link";
 import { Search, Plus, Package, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useSidebar } from "./SidebarProvider";
+import { useSearch } from "@/context/SearchContext";
 import ItemCreateDialog from "@/components/items/ItemCreateDialog";
 import CollectionCreateDialog from "@/components/collections/CollectionCreateDialog";
 
 export default function TopBar() {
   const { toggleMobile } = useSidebar();
+  const { setOpen: openSearch } = useSearch();
   const [createOpen, setCreateOpen] = useState(false);
   const [createCollectionOpen, setCreateCollectionOpen] = useState(false);
 
@@ -34,15 +35,18 @@ export default function TopBar() {
           </Link>
         </div>
 
-        {/* Center: Search */}
+        {/* Center: Search trigger */}
         <div className="flex flex-1 items-center justify-center">
-          <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search items..."
-              className="h-8 w-full bg-muted/50 border-0 pl-8 focus-visible:ring-1"
-            />
-          </div>
+          <button
+            onClick={() => openSearch(true)}
+            className="flex h-8 w-full max-w-sm items-center gap-2 rounded-md border-0 bg-muted/50 px-3 text-sm text-muted-foreground hover:bg-muted/80 transition-colors"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Search items...</span>
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-border bg-background px-1.5 text-[10px] font-medium">
+              <span>⌘</span>K
+            </kbd>
+          </button>
         </div>
 
         {/* Right: Actions */}
