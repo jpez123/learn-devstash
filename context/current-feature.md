@@ -1,27 +1,12 @@
-# Current Feature: Pinned Items
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create `toggleItemPin` server action with auth + ownership check
-- Wire Pin button in ItemDrawer with optimistic UI (no onClick currently)
-- Toast notification on success/error
-- Pinned items sort to top of `/items/[type]` listings
-- Pinned items appear in dashboard pinned section (already fetches `isPinned=true`)
-- Follow Favorite Button pattern for implementation
-- Items only (not collections)
-- Pin icon on ItemCard remains a static indicator (no toggle)
-
 ## Notes
-
-- Follow the Favorite Toggle pattern (`toggleFavoriteItem` / `toggleFavoriteCollection`)
-- ItemDrawer already has a Pin button UI but no `onClick` handler
-- `isPinned` field already exists on the `Item` model
-- Dashboard pinned section already queries `isPinned=true` via `getPinnedItems`
-- Sort pinned items to top in `getItemsByType` query
 
 ## History
 
@@ -67,3 +52,4 @@ In Progress
 - **2026-05-05** — Completed Favorites Page: star icon in TopBar links to /favorites (protected via proxy); getFavoriteItems and getFavoriteCollections DB functions (filter isFavorite=true, ordered by updatedAt desc); compact monospace list view with separate Items and Collections sections showing type icon, title, type badge, and date; click item opens ItemDrawer, click collection navigates to /collections/[id]; empty state when no favorites
 - **2026-05-05** — Completed Favorite Toggle: wired all UI-only favorite placeholders to real DB persistence; toggleFavoriteItem and toggleFavoriteCollection DB functions + server actions; ItemDrawer Star button, CollectionActions Heart button on /collections/[id], and CollectionCard 3-dots dropdown all call actions, update local state immediately, call router.refresh() to sync sidebar and /favorites page; 9 new unit tests
 - **2026-05-05** — Completed Favorites Sorting: FavoritesSortedList client component wraps the favorites page lists; Items sortable by Date/Name/Type, Collections by Date/Name; clicking the active sort button toggles asc/desc with ↑/↓ arrow indicator; default is Date desc; added updatedAt to ItemWithMeta and FavoriteCollection types
+- **2026-05-05** — Completed Pinned Items: toggleItemPin DB function + server action (auth + ownership check); Pin button in ItemDrawer wired with optimistic UI and toast; getItemsByType orders pinned items to top ([isPinned desc, createdAt desc]); Pin icon added as static indicator on ItemCard next to favorite star; 4 new unit tests
