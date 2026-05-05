@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { auth } from '@/auth';
-import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb, toggleFavoriteItem as toggleFavoriteItemDb } from '@/lib/db/items';
+import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb, toggleFavoriteItem as toggleFavoriteItemDb, toggleItemPin as toggleItemPinDb } from '@/lib/db/items';
 import type { ItemDetail } from '@/lib/db/items';
 
 const CREATABLE_TYPES = ['snippet', 'prompt', 'command', 'note', 'link', 'file', 'image'] as const;
@@ -115,6 +115,23 @@ export async function toggleFavoriteItem(itemId: string): Promise<ActionResult<{
     return { success: true, data: { isFavorite } };
   } catch {
     return { success: false, error: 'Failed to update favorite' };
+  }
+}
+
+export async function toggleItemPin(itemId: string): Promise<ActionResult<{ isPinned: boolean }>> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
+  try {
+    const isPinned = await toggleItemPinDb(itemId, session.user.id);
+    if (isPinned === null) {
+      return { success: false, error: 'Item not found or access denied' };
+    }
+    return { success: true, data: { isPinned } };
+  } catch {
+    return { success: false, error: 'Failed to update pin' };
   }
 }
 

@@ -322,7 +322,7 @@ export async function getItemsByType(
         itemType: { select: { name: true, icon: true, color: true } },
         tags: { include: { tag: { select: { name: true } } } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ isPinned: 'desc' }, { createdAt: 'desc' }],
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),
@@ -356,6 +356,19 @@ export async function toggleFavoriteItem(id: string, userId: string): Promise<bo
   });
 
   return updated.isFavorite;
+}
+
+export async function toggleItemPin(id: string, userId: string): Promise<boolean | null> {
+  const existing = await prisma.item.findFirst({ where: { id, userId }, select: { isPinned: true } });
+  if (!existing) return null;
+
+  const updated = await prisma.item.update({
+    where: { id },
+    data: { isPinned: !existing.isPinned },
+    select: { isPinned: true },
+  });
+
+  return updated.isPinned;
 }
 
 export async function getFavoriteItems(userId: string): Promise<ItemWithMeta[]> {

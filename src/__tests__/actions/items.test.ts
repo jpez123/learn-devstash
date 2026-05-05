@@ -9,17 +9,19 @@ vi.mock('@/lib/db/items', () => ({
   updateItem: vi.fn(),
   deleteItem: vi.fn(),
   toggleFavoriteItem: vi.fn(),
+  toggleItemPin: vi.fn(),
 }));
 
 import { auth } from '@/auth';
-import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb, toggleFavoriteItem as toggleFavoriteItemDb } from '@/lib/db/items';
-import { createItem, updateItem, deleteItem, toggleFavoriteItem } from '@/actions/items';
+import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb, toggleFavoriteItem as toggleFavoriteItemDb, toggleItemPin as toggleItemPinDb } from '@/lib/db/items';
+import { createItem, updateItem, deleteItem, toggleFavoriteItem, toggleItemPin } from '@/actions/items';
 
 const mockAuth = vi.mocked(auth);
 const mockCreateItemDb = vi.mocked(createItemDb);
 const mockUpdateItemDb = vi.mocked(updateItemDb);
 const mockDeleteItemDb = vi.mocked(deleteItemDb);
 const mockToggleFavoriteItemDb = vi.mocked(toggleFavoriteItemDb);
+const mockToggleItemPinDb = vi.mocked(toggleItemPinDb);
 
 const validSession = { user: { id: 'user-1' } };
 
@@ -229,5 +231,35 @@ describe('toggleFavoriteItem', () => {
     mockToggleFavoriteItemDb.mockResolvedValueOnce(false);
     const result = await toggleFavoriteItem('item-1');
     expect(result).toEqual({ success: true, data: { isFavorite: false } });
+  });
+});
+
+describe('toggleItemPin', () => {
+  it('returns unauthorized when no session', async () => {
+    mockAuth.mockResolvedValueOnce(null as never);
+    const result = await toggleItemPin('item-1');
+    expect(result).toEqual({ success: false, error: 'Unauthorized' });
+  });
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValueOnce(validSession as never);
+    mockToggleItemPinDb.mockResolvedValueOnce(null);
+    const result = await toggleItemPin('item-1');
+    expect(result).toEqual({ success: false, error: 'Item not found or access denied' });
+  });
+
+  it('returns isPinned=true when pinned', async () => {
+    mockAuth.mockResolvedValueOnce(validSession as never);
+    mockToggleItemPinDb.mockResolvedValueOnce(true);
+    const result = await toggleItemPin('item-1');
+    expect(result).toEqual({ success: true, data: { isPinned: true } });
+    expect(mockToggleItemPinDb).toHaveBeenCalledWith('item-1', 'user-1');
+  });
+
+  it('returns isPinned=false when unpinned', async () => {
+    mockAuth.mockResolvedValueOnce(validSession as never);
+    mockToggleItemPinDb.mockResolvedValueOnce(false);
+    const result = await toggleItemPin('item-1');
+    expect(result).toEqual({ success: true, data: { isPinned: false } });
   });
 });

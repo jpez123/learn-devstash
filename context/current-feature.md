@@ -1,12 +1,27 @@
-# Current Feature
+# Current Feature: Pinned Items
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Create `toggleItemPin` server action with auth + ownership check
+- Wire Pin button in ItemDrawer with optimistic UI (no onClick currently)
+- Toast notification on success/error
+- Pinned items sort to top of `/items/[type]` listings
+- Pinned items appear in dashboard pinned section (already fetches `isPinned=true`)
+- Follow Favorite Button pattern for implementation
+- Items only (not collections)
+- Pin icon on ItemCard remains a static indicator (no toggle)
+
 ## Notes
+
+- Follow the Favorite Toggle pattern (`toggleFavoriteItem` / `toggleFavoriteCollection`)
+- ItemDrawer already has a Pin button UI but no `onClick` handler
+- `isPinned` field already exists on the `Item` model
+- Dashboard pinned section already queries `isPinned=true` via `getPinnedItems`
+- Sort pinned items to top in `getItemsByType` query
 
 ## History
 

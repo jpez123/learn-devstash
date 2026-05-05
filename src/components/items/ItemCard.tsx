@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, Copy, Check } from 'lucide-react';
+import { Star, Pin, Copy, Check } from 'lucide-react';
 import TypeIcon from '@/components/ui/TypeIcon';
 import { useItemDrawer } from '@/components/items/ItemDrawerProvider';
 import { ItemWithMeta } from '@/lib/db/items';
@@ -44,6 +44,7 @@ export default function ItemCard({ item }: { item: ItemWithMeta }) {
           <span className="truncate text-sm font-medium text-foreground">{item.title}</span>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
+          {item.isPinned && <Pin size={13} className="fill-foreground text-foreground" />}
           {item.isFavorite && <Star size={13} className="fill-yellow-400 text-yellow-400" />}
           {copyValue && (
             <button

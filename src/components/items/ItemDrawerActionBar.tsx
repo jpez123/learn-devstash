@@ -51,6 +51,7 @@ interface ItemDrawerActionBarProps {
   onEdit: () => void;
   onDelete: () => void;
   onFavorite: () => void;
+  onPin: () => void;
 }
 
 export default function ItemDrawerActionBar({
@@ -63,6 +64,7 @@ export default function ItemDrawerActionBar({
   onEdit,
   onDelete,
   onFavorite,
+  onPin,
 }: ItemDrawerActionBarProps) {
   return (
     <div className="flex items-center gap-1 border-b border-border px-4 py-2">
@@ -94,6 +96,7 @@ export default function ItemDrawerActionBar({
             icon={<Pin size={14} className={item.isPinned ? 'fill-foreground' : ''} />}
             label="Pin"
             active={item.isPinned}
+            onClick={onPin}
           />
           <ActionButton icon={<Copy size={14} />} label="Copy" />
           {FILE_TYPES.includes(item.itemType.name) && item.fileUrl && (

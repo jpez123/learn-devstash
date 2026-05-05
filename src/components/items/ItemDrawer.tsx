@@ -22,7 +22,7 @@ import ItemDrawerHeader from './ItemDrawerHeader';
 import ItemDrawerActionBar from './ItemDrawerActionBar';
 import EditModeSection from './EditModeSection';
 import ViewModeSection from './ViewModeSection';
-import { toggleFavoriteItem } from '@/actions/items';
+import { toggleFavoriteItem, toggleItemPin } from '@/actions/items';
 
 interface ItemDrawerProps {
   itemId: string | null;
@@ -74,6 +74,17 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
     router.refresh();
   }
 
+  async function handlePin() {
+    if (!item) return;
+    const result = await toggleItemPin(item.id);
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+    setLoadState({ id: item.id, data: { ...item, isPinned: result.data.isPinned } });
+    router.refresh();
+  }
+
   const {
     isEditMode,
     editState,
@@ -118,6 +129,7 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                 onEdit={enterEditMode}
                 onDelete={() => setDeleteDialogOpen(true)}
                 onFavorite={handleFavorite}
+                onPin={handlePin}
               />
               <div className="flex flex-col gap-5 px-5 py-5">
                 {isEditMode ? (
