@@ -1,12 +1,24 @@
-# Current Feature
+# Current Feature: Settings Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Create a `/settings` route protected by auth (proxy + layout check)
+- Add a "Settings" link in the user icon dropdown at the bottom of the sidebar
+- Move "Delete Account" functionality from `/profile` to `/settings`
+- Move "Change Password" functionality from `/profile` to `/settings`
+- Keep `/profile` page but without the account action sections
+
 ## Notes
+
+- Settings page URL: `/settings`
+- Use the same protection pattern as `/profile` (proxy.ts + layout auth check)
+- The user dropdown in the sidebar already has "Profile" and "Sign Out" — add "Settings" between them or nearby
+- Account actions to move: DeleteAccountSection and ChangePasswordForm components
+- The `/profile` page can retain user info and usage stats, just remove the account action sections
 
 ## History
 

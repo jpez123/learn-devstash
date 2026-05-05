@@ -1,0 +1,34 @@
+import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
+import { prisma } from '@/lib/prisma';
+import ChangePasswordForm from './ChangePasswordForm';
+import DeleteAccountSection from './DeleteAccountSection';
+
+export default async function SettingsPage() {
+  const session = await auth();
+  if (!session?.user?.id) redirect('/sign-in');
+
+  const userId = session.user.id;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { password: true },
+  });
+
+  if (!user) redirect('/sign-in');
+
+  const hasPassword = !!user.password;
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+        <p className="text-sm text-muted-foreground">Manage your account settings</p>
+      </div>
+
+      {hasPassword && <ChangePasswordForm />}
+
+      <DeleteAccountSection />
+    </div>
+  );
+}

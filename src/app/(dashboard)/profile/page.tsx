@@ -3,8 +3,6 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { getItemTypesWithCounts } from '@/lib/db/items';
 import UserAvatar from '@/components/ui/UserAvatar';
-import ChangePasswordForm from './ChangePasswordForm';
-import DeleteAccountSection from './DeleteAccountSection';
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -15,7 +13,7 @@ export default async function ProfilePage() {
   const [user, itemTypes, totalItems, totalCollections] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { name: true, email: true, image: true, password: true, createdAt: true },
+      select: { name: true, email: true, image: true, createdAt: true },
     }),
     getItemTypesWithCounts(userId),
     prisma.item.count({ where: { userId } }),
@@ -24,14 +22,12 @@ export default async function ProfilePage() {
 
   if (!user) redirect('/sign-in');
 
-  const hasPassword = !!user.password;
-
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">Profile</h1>
-        <p className="text-sm text-muted-foreground">Manage your account settings</p>
+        <p className="text-sm text-muted-foreground">Your profile and usage stats</p>
       </div>
 
       {/* User Info */}
@@ -82,11 +78,6 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      {/* Change Password (email users only) */}
-      {hasPassword && <ChangePasswordForm />}
-
-      {/* Delete Account */}
-      <DeleteAccountSection />
     </div>
   );
 }

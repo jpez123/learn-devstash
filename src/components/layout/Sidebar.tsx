@@ -180,6 +180,13 @@ function SidebarInner({
               <User size={14} />
               Profile
             </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => router.push('/settings')}
+            >
+              <Settings size={14} />
+              Settings
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
