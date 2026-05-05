@@ -3,8 +3,7 @@ import { Star } from 'lucide-react';
 import { auth } from '@/auth';
 import { getFavoriteItems } from '@/lib/db/items';
 import { getFavoriteCollections } from '@/lib/db/collections';
-import FavoriteItemRow from '@/components/favorites/FavoriteItemRow';
-import FavoriteCollectionRow from '@/components/favorites/FavoriteCollectionRow';
+import FavoritesSortedList from '@/components/favorites/FavoritesSortedList';
 
 export default async function FavoritesPage() {
   const session = await auth();
@@ -36,33 +35,7 @@ export default async function FavoritesPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {items.length > 0 && (
-            <div>
-              <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Items ({items.length})
-              </h2>
-              <div className="overflow-hidden rounded-md border border-border/60">
-                {items.map((item) => (
-                  <FavoriteItemRow key={item.id} item={item} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {collections.length > 0 && (
-            <div>
-              <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Collections ({collections.length})
-              </h2>
-              <div className="overflow-hidden rounded-md border border-border/60">
-                {collections.map((col) => (
-                  <FavoriteCollectionRow key={col.id} col={col} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <FavoritesSortedList items={items} collections={collections} />
       )}
     </div>
   );

@@ -1,12 +1,25 @@
-# Current Feature
+# Current Feature: Client-Side Sorting on Favorites Page
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Add a sort control to the favorites page that lets users sort by name, date, and item type
+- Sorting applies to both the Items and Collections sections independently
+- Sort state is client-side only (no URL params, no server round-trip)
+- Default sort is by date (most recent first), matching current behavior
+- Sort UI is minimal and consistent with the existing page style
+
 ## Notes
+
+- The favorites page is at `/favorites` and currently renders items and collections fetched server-side via `getFavoriteItems` and `getFavoriteCollections`
+- Items have: title, type (icon + name), updatedAt
+- Collections have: name, updatedAt (no type concept)
+- Sort options: Name (A–Z), Date (newest first), Item Type (for items only; N/A for collections)
+- Implementation should be a client component wrapper around the existing list — avoid converting the whole page to a client component
+- No new DB functions needed; sort is purely in-memory on the already-fetched data
 
 ## History
 

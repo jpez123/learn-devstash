@@ -241,6 +241,7 @@ export type ItemWithMeta = {
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
+  updatedAt: Date;
   fileUrl: string | null;
   fileName: string | null;
   fileSize: number | null;
@@ -261,6 +262,7 @@ type PrismaItemWithMeta = {
   isFavorite: boolean;
   isPinned: boolean;
   createdAt: Date;
+  updatedAt: Date;
   fileUrl: string | null;
   fileName: string | null;
   fileSize: number | null;
@@ -278,6 +280,7 @@ function toItemWithMeta(item: PrismaItemWithMeta): ItemWithMeta {
     isFavorite: item.isFavorite,
     isPinned: item.isPinned,
     createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
     fileUrl: item.fileUrl,
     fileName: item.fileName,
     fileSize: item.fileSize,

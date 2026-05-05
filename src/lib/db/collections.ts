@@ -237,6 +237,7 @@ export async function getCollectionWithItems(
     isFavorite: ic.item.isFavorite,
     isPinned: ic.item.isPinned,
     createdAt: ic.item.createdAt,
+    updatedAt: ic.item.updatedAt,
     fileUrl: ic.item.fileUrl,
     fileName: ic.item.fileName,
     fileSize: ic.item.fileSize,
@@ -260,6 +261,7 @@ export type FavoriteCollection = {
   name: string;
   itemCount: number;
   createdAt: Date;
+  updatedAt: Date;
 };
 
 export async function getFavoriteCollections(userId: string): Promise<FavoriteCollection[]> {
@@ -274,6 +276,7 @@ export async function getFavoriteCollections(userId: string): Promise<FavoriteCo
     name: col.name,
     itemCount: col._count.items,
     createdAt: col.createdAt,
+    updatedAt: col.updatedAt,
   }));
 }
 
