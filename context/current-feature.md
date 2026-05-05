@@ -1,27 +1,12 @@
-# Current Feature: Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add star icon button to TopBar linking to /favorites
-- Create /favorites route with protection
-- Fetch all user favorited items and collections
-- Compact list view (VS Code/terminal style, not cards)
-- Each row: type icon, title, type badge, date added
-- Separate sections for items and collections with counts
-- Click item opens ItemDrawer, click collection navigates to /collections/[id]
-- Empty state when no favorites
-- Sort by most recently favorited (updatedAt)
-
 ## Notes
-
-- Monospace or semi-monospace font
-- Minimal padding, high density
-- Subtle hover states
-- No cards or heavy borders, clean lines only
 
 ## History
 
@@ -64,3 +49,4 @@ In Progress
 - **2026-05-04** — Completed Pagination: Pagination component with numbered pages and prev/next (greyed out at boundaries); paginated /items/[type], /collections, and /collections/[id] pages via ?page= search param; getItemsByType returns PaginatedItems {items, total}; getAllCollections returns PaginatedCollections {collections, total}; getCollectionWithItems uses separate type-breakdown query so header counts remain accurate across pages; constants file (ITEMS_PER_PAGE=21, COLLECTIONS_PER_PAGE=21, DASHBOARD_COLLECTIONS_LIMIT=6, DASHBOARD_RECENT_ITEMS_LIMIT=10) wired into dashboard page
 - **2026-05-04** — Completed Settings Page: /settings route (protected via proxy + layout auth check); ChangePasswordForm and DeleteAccountSection moved from /profile to /settings; /profile retains user info and usage stats only; "Settings" link added to sidebar user dropdown between Profile and Sign out
 - **2026-05-05** — Completed Editor Preferences Settings: editorPreferences Json column on User with Prisma migration; EditorPreferencesContext auto-saves on change with toast; updateEditorPreferences server action (Zod validation + auth); EditorPreferencesForm on /settings with theme (vs-dark/monokai/github-dark), font size, tab size dropdowns and word wrap/minimap toggles; CodeEditor reads all preferences from context including custom monokai and github-dark Monaco themes; provider placed at outermost layout level so ItemDrawer's CodeEditor is in scope; 7 unit tests
+- **2026-05-05** — Completed Favorites Page: star icon in TopBar links to /favorites (protected via proxy); getFavoriteItems and getFavoriteCollections DB functions (filter isFavorite=true, ordered by updatedAt desc); compact monospace list view with separate Items and Collections sections showing type icon, title, type badge, and date; click item opens ItemDrawer, click collection navigates to /collections/[id]; empty state when no favorites
