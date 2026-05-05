@@ -1,23 +1,10 @@
-# Current Feature: Editor Preferences Settings
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
-
-- Font size dropdown in settings
-- Tab size dropdown in settings
-- Word wrap toggle (default: on)
-- Minimap toggle (default: off)
-- Theme dropdown: vs-dark, monokai, github-dark (default: vs-dark)
-- Store preferences in JSON column `editorPreferences` on User model
-- Prisma migration for the new column (no db push)
-- Server action to update preferences
-- Apply settings to Monaco editor component
-- Auto-save on change (no save button needed)
-- Success toast on save
-- EditorPreferencesContext for client components
 
 ## Notes
 
@@ -61,3 +48,4 @@ In Progress
 - **2026-04-28** — Completed Global Search / Command Palette: shadcn cmdk Command palette opens via Cmd+K or TopBar click trigger with ⌘K hint; grouped results (Items with type icon + content preview, Collections with item count); case-insensitive substring filter replacing cmdk default fuzzy to prevent false positives; getSearchData DB function pre-fetches all items and collections at layout level; SearchProvider context holds open state and data; item select opens ItemDrawer, collection select navigates to /collections/[id]; unit tests for getSearchData (7 cases)
 - **2026-05-04** — Completed Pagination: Pagination component with numbered pages and prev/next (greyed out at boundaries); paginated /items/[type], /collections, and /collections/[id] pages via ?page= search param; getItemsByType returns PaginatedItems {items, total}; getAllCollections returns PaginatedCollections {collections, total}; getCollectionWithItems uses separate type-breakdown query so header counts remain accurate across pages; constants file (ITEMS_PER_PAGE=21, COLLECTIONS_PER_PAGE=21, DASHBOARD_COLLECTIONS_LIMIT=6, DASHBOARD_RECENT_ITEMS_LIMIT=10) wired into dashboard page
 - **2026-05-04** — Completed Settings Page: /settings route (protected via proxy + layout auth check); ChangePasswordForm and DeleteAccountSection moved from /profile to /settings; /profile retains user info and usage stats only; "Settings" link added to sidebar user dropdown between Profile and Sign out
+- **2026-05-05** — Completed Editor Preferences Settings: editorPreferences Json column on User with Prisma migration; EditorPreferencesContext auto-saves on change with toast; updateEditorPreferences server action (Zod validation + auth); EditorPreferencesForm on /settings with theme (vs-dark/monokai/github-dark), font size, tab size dropdowns and word wrap/minimap toggles; CodeEditor reads all preferences from context including custom monokai and github-dark Monaco themes; provider placed at outermost layout level so ItemDrawer's CodeEditor is in scope; 7 unit tests
