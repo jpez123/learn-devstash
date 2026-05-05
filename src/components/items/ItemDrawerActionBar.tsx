@@ -50,6 +50,7 @@ interface ItemDrawerActionBarProps {
   onCancelEdit: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onFavorite: () => void;
 }
 
 export default function ItemDrawerActionBar({
@@ -61,6 +62,7 @@ export default function ItemDrawerActionBar({
   onCancelEdit,
   onEdit,
   onDelete,
+  onFavorite,
 }: ItemDrawerActionBarProps) {
   return (
     <div className="flex items-center gap-1 border-b border-border px-4 py-2">
@@ -86,6 +88,7 @@ export default function ItemDrawerActionBar({
             label="Favorite"
             active={item.isFavorite}
             activeColor="text-yellow-400"
+            onClick={onFavorite}
           />
           <ActionButton
             icon={<Pin size={14} className={item.isPinned ? 'fill-foreground' : ''} />}

@@ -1,12 +1,29 @@
-# Current Feature
+# Current Feature: Favorite Toggle (Drawer, Collection Page, Collection Cards)
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Clicking the heart/favorite button in the ItemDrawer action bar toggles `isFavorite` on the item and updates the UI immediately
+- Clicking a favorite button on the `/collections/[id]` page header toggles `isFavorite` on the collection and updates the UI immediately
+- Clicking a favorite button in the 3-dots dropdown (or directly on) a CollectionCard toggles `isFavorite` and updates the UI immediately
+- All favorite toggles persist to the database via a server action
+- UI reflects the current favorite state (filled heart when favorited, outline when not)
+- Toast notification on success/error
+- Existing "favorite UI-only" placeholders replaced with real wired behavior
+
 ## Notes
+
+- `isFavorite` already exists on both `Item` and `Collection` models in the Prisma schema
+- ItemDrawer already has a Favorite button in the action bar (currently toggles local state only — needs to persist via server action)
+- CollectionActions on `/collections/[id]` already has a Favorite button marked "UI-only" — needs wiring
+- CollectionCard dropdown already has a Favorite option marked "UI-only" — needs wiring
+- Use existing `updateItem` or add a dedicated `toggleFavoriteItem` server action (lean toward minimal — reuse updateItem if clean)
+- Add `toggleFavoriteCollection` server action in `src/actions/collections.ts`
+- After toggle: call `router.refresh()` so sidebar favorites and /favorites page stay in sync
+- Write unit tests for any new server actions
 
 ## History
 

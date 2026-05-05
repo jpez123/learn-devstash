@@ -23,16 +23,27 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import CollectionEditDialog from '@/components/collections/CollectionEditDialog';
-import { deleteCollection } from '@/actions/collections';
+import { deleteCollection, toggleFavoriteCollection } from '@/actions/collections';
 import type { CollectionWithMeta } from '@/lib/db/collections';
 
 export default function CollectionCard({ col }: { col: CollectionWithMeta }) {
   const router = useRouter();
   const dominantColor = col.dominantType?.color ?? '#6b7280';
 
+  const [isFavorite, setIsFavorite] = useState(col.isFavorite);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  async function handleFavorite() {
+    const result = await toggleFavoriteCollection(col.id);
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+    setIsFavorite(result.data.isFavorite);
+    router.refresh();
+  }
 
   async function handleDelete() {
     setDeleting(true);
@@ -60,7 +71,7 @@ export default function CollectionCard({ col }: { col: CollectionWithMeta }) {
         <div className="flex items-start justify-between gap-2">
           <span className="text-sm font-medium leading-tight text-foreground">{col.name}</span>
           <div className="flex items-center gap-1 shrink-0">
-            {col.isFavorite && <Heart size={13} className="fill-pink-400 text-pink-400" />}
+            {isFavorite && <Heart size={13} className="fill-pink-400 text-pink-400" />}
             <DropdownMenu>
               <DropdownMenuTrigger
                 onClick={(e) => e.stopPropagation()}
@@ -69,12 +80,9 @@ export default function CollectionCard({ col }: { col: CollectionWithMeta }) {
                 <MoreHorizontal size={14} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                <DropdownMenuItem
-                  className="text-muted-foreground"
-                  disabled
-                >
-                  <Heart size={14} className="mr-2" />
-                  Favorite
+                <DropdownMenuItem onClick={handleFavorite}>
+                  <Heart size={14} className={`mr-2 ${isFavorite ? 'fill-pink-400 text-pink-400' : ''}`} />
+                  {isFavorite ? 'Unfavorite' : 'Favorite'}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setEditOpen(true)}>

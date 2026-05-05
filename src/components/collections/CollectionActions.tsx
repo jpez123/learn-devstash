@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import CollectionEditDialog from '@/components/collections/CollectionEditDialog';
-import { deleteCollection } from '@/actions/collections';
+import { deleteCollection, toggleFavoriteCollection } from '@/actions/collections';
 
 interface CollectionActionsProps {
   collection: { id: string; name: string; description: string | null; isFavorite: boolean };
@@ -27,6 +27,22 @@ export default function CollectionActions({ collection }: CollectionActionsProps
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(collection.isFavorite);
+  const [togglingFavorite, setTogglingFavorite] = useState(false);
+
+  async function handleFavorite() {
+    setTogglingFavorite(true);
+    const result = await toggleFavoriteCollection(collection.id);
+    setTogglingFavorite(false);
+
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+
+    setIsFavorite(result.data.isFavorite);
+    router.refresh();
+  }
 
   async function handleDelete() {
     setDeleting(true);
@@ -51,10 +67,12 @@ export default function CollectionActions({ collection }: CollectionActionsProps
           size="icon"
           className="h-8 w-8 text-muted-foreground hover:text-pink-400"
           aria-label="Favorite"
+          onClick={handleFavorite}
+          disabled={togglingFavorite}
         >
           <Heart
             size={16}
-            className={collection.isFavorite ? 'fill-pink-400 text-pink-400' : ''}
+            className={isFavorite ? 'fill-pink-400 text-pink-400' : ''}
           />
         </Button>
         <Button

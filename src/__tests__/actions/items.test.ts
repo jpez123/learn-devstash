@@ -8,16 +8,18 @@ vi.mock('@/lib/db/items', () => ({
   createItem: vi.fn(),
   updateItem: vi.fn(),
   deleteItem: vi.fn(),
+  toggleFavoriteItem: vi.fn(),
 }));
 
 import { auth } from '@/auth';
-import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb } from '@/lib/db/items';
-import { createItem, updateItem, deleteItem } from '@/actions/items';
+import { createItem as createItemDb, updateItem as updateItemDb, deleteItem as deleteItemDb, toggleFavoriteItem as toggleFavoriteItemDb } from '@/lib/db/items';
+import { createItem, updateItem, deleteItem, toggleFavoriteItem } from '@/actions/items';
 
 const mockAuth = vi.mocked(auth);
 const mockCreateItemDb = vi.mocked(createItemDb);
 const mockUpdateItemDb = vi.mocked(updateItemDb);
 const mockDeleteItemDb = vi.mocked(deleteItemDb);
+const mockToggleFavoriteItemDb = vi.mocked(toggleFavoriteItemDb);
 
 const validSession = { user: { id: 'user-1' } };
 
@@ -197,5 +199,35 @@ describe('deleteItem action', () => {
     mockDeleteItemDb.mockResolvedValue(true);
     await deleteItem('item-1');
     expect(mockDeleteItemDb).toHaveBeenCalledWith('item-1', 'user-1');
+  });
+});
+
+describe('toggleFavoriteItem', () => {
+  it('returns unauthorized when no session', async () => {
+    mockAuth.mockResolvedValueOnce(null as never);
+    const result = await toggleFavoriteItem('item-1');
+    expect(result).toEqual({ success: false, error: 'Unauthorized' });
+  });
+
+  it('returns error when item not found', async () => {
+    mockAuth.mockResolvedValueOnce(validSession as never);
+    mockToggleFavoriteItemDb.mockResolvedValueOnce(null);
+    const result = await toggleFavoriteItem('item-1');
+    expect(result).toEqual({ success: false, error: 'Item not found or access denied' });
+  });
+
+  it('returns new isFavorite=true when toggled on', async () => {
+    mockAuth.mockResolvedValueOnce(validSession as never);
+    mockToggleFavoriteItemDb.mockResolvedValueOnce(true);
+    const result = await toggleFavoriteItem('item-1');
+    expect(result).toEqual({ success: true, data: { isFavorite: true } });
+    expect(mockToggleFavoriteItemDb).toHaveBeenCalledWith('item-1', 'user-1');
+  });
+
+  it('returns new isFavorite=false when toggled off', async () => {
+    mockAuth.mockResolvedValueOnce(validSession as never);
+    mockToggleFavoriteItemDb.mockResolvedValueOnce(false);
+    const result = await toggleFavoriteItem('item-1');
+    expect(result).toEqual({ success: true, data: { isFavorite: false } });
   });
 });

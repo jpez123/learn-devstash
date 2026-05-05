@@ -342,6 +342,19 @@ export async function getRecentItems(userId: string, limit = 10): Promise<ItemWi
   return items.map(toItemWithMeta);
 }
 
+export async function toggleFavoriteItem(id: string, userId: string): Promise<boolean | null> {
+  const existing = await prisma.item.findFirst({ where: { id, userId }, select: { isFavorite: true } });
+  if (!existing) return null;
+
+  const updated = await prisma.item.update({
+    where: { id },
+    data: { isFavorite: !existing.isFavorite },
+    select: { isFavorite: true },
+  });
+
+  return updated.isFavorite;
+}
+
 export async function getFavoriteItems(userId: string): Promise<ItemWithMeta[]> {
   const items = await prisma.item.findMany({
     where: { userId, isFavorite: true },

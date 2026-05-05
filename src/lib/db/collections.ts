@@ -66,6 +66,19 @@ export async function updateCollection(
   });
 }
 
+export async function toggleFavoriteCollection(id: string, userId: string): Promise<boolean | null> {
+  const existing = await prisma.collection.findFirst({ where: { id, userId }, select: { isFavorite: true } });
+  if (!existing) return null;
+
+  const updated = await prisma.collection.update({
+    where: { id },
+    data: { isFavorite: !existing.isFavorite },
+    select: { isFavorite: true },
+  });
+
+  return updated.isFavorite;
+}
+
 export async function deleteCollection(id: string, userId: string): Promise<boolean> {
   const existing = await prisma.collection.findFirst({ where: { id, userId } });
   if (!existing) return false;

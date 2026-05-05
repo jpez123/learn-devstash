@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import {
   Sheet,
   SheetContent,
@@ -20,6 +22,7 @@ import ItemDrawerHeader from './ItemDrawerHeader';
 import ItemDrawerActionBar from './ItemDrawerActionBar';
 import EditModeSection from './EditModeSection';
 import ViewModeSection from './ViewModeSection';
+import { toggleFavoriteItem } from '@/actions/items';
 
 interface ItemDrawerProps {
   itemId: string | null;
@@ -57,7 +60,19 @@ function DrawerSkeleton() {
 }
 
 export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
+  const router = useRouter();
   const { item, loading, setLoadState } = useItemData(itemId);
+
+  async function handleFavorite() {
+    if (!item) return;
+    const result = await toggleFavoriteItem(item.id);
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+    setLoadState({ id: item.id, data: { ...item, isFavorite: result.data.isFavorite } });
+    router.refresh();
+  }
 
   const {
     isEditMode,
@@ -102,6 +117,7 @@ export default function ItemDrawer({ itemId, onClose }: ItemDrawerProps) {
                 onCancelEdit={cancelEdit}
                 onEdit={enterEditMode}
                 onDelete={() => setDeleteDialogOpen(true)}
+                onFavorite={handleFavorite}
               />
               <div className="flex flex-col gap-5 px-5 py-5">
                 {isEditMode ? (
