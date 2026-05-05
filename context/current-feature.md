@@ -1,24 +1,12 @@
-# Current Feature: Settings Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a `/settings` route protected by auth (proxy + layout check)
-- Add a "Settings" link in the user icon dropdown at the bottom of the sidebar
-- Move "Delete Account" functionality from `/profile` to `/settings`
-- Move "Change Password" functionality from `/profile` to `/settings`
-- Keep `/profile` page but without the account action sections
-
 ## Notes
-
-- Settings page URL: `/settings`
-- Use the same protection pattern as `/profile` (proxy.ts + layout auth check)
-- The user dropdown in the sidebar already has "Profile" and "Sign Out" — add "Settings" between them or nearby
-- Account actions to move: DeleteAccountSection and ChangePasswordForm components
-- The `/profile` page can retain user info and usage stats, just remove the account action sections
 
 ## History
 
@@ -59,3 +47,4 @@ In Progress
 - **2026-04-27** — Completed Collection Actions: updateCollection and deleteCollection DB functions and server actions; CollectionActions component with Edit/Delete/Favorite buttons on /collections/[id] header (favorite UI-only); CollectionEditDialog for editing name and description; CollectionCard refactored from Link to client component with 3-dots dropdown (Edit, Delete, Favorite — favorite UI-only); delete confirms with AlertDialog, removes collection and join records without deleting items, redirects to /collections; unit tests for both new actions (9 cases)
 - **2026-04-28** — Completed Global Search / Command Palette: shadcn cmdk Command palette opens via Cmd+K or TopBar click trigger with ⌘K hint; grouped results (Items with type icon + content preview, Collections with item count); case-insensitive substring filter replacing cmdk default fuzzy to prevent false positives; getSearchData DB function pre-fetches all items and collections at layout level; SearchProvider context holds open state and data; item select opens ItemDrawer, collection select navigates to /collections/[id]; unit tests for getSearchData (7 cases)
 - **2026-05-04** — Completed Pagination: Pagination component with numbered pages and prev/next (greyed out at boundaries); paginated /items/[type], /collections, and /collections/[id] pages via ?page= search param; getItemsByType returns PaginatedItems {items, total}; getAllCollections returns PaginatedCollections {collections, total}; getCollectionWithItems uses separate type-breakdown query so header counts remain accurate across pages; constants file (ITEMS_PER_PAGE=21, COLLECTIONS_PER_PAGE=21, DASHBOARD_COLLECTIONS_LIMIT=6, DASHBOARD_RECENT_ITEMS_LIMIT=10) wired into dashboard page
+- **2026-05-04** — Completed Settings Page: /settings route (protected via proxy + layout auth check); ChangePasswordForm and DeleteAccountSection moved from /profile to /settings; /profile retains user info and usage stats only; "Settings" link added to sidebar user dropdown between Profile and Sign out
