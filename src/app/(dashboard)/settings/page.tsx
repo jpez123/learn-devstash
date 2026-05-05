@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import ChangePasswordForm from './ChangePasswordForm';
 import DeleteAccountSection from './DeleteAccountSection';
+import EditorPreferencesForm from './EditorPreferencesForm';
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -25,6 +26,8 @@ export default async function SettingsPage() {
         <h1 className="text-2xl font-bold text-foreground">Settings</h1>
         <p className="text-sm text-muted-foreground">Manage your account settings</p>
       </div>
+
+      <EditorPreferencesForm />
 
       {hasPassword && <ChangePasswordForm />}
 
