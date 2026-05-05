@@ -1,29 +1,12 @@
-# Current Feature: Favorite Toggle (Drawer, Collection Page, Collection Cards)
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Clicking the heart/favorite button in the ItemDrawer action bar toggles `isFavorite` on the item and updates the UI immediately
-- Clicking a favorite button on the `/collections/[id]` page header toggles `isFavorite` on the collection and updates the UI immediately
-- Clicking a favorite button in the 3-dots dropdown (or directly on) a CollectionCard toggles `isFavorite` and updates the UI immediately
-- All favorite toggles persist to the database via a server action
-- UI reflects the current favorite state (filled heart when favorited, outline when not)
-- Toast notification on success/error
-- Existing "favorite UI-only" placeholders replaced with real wired behavior
-
 ## Notes
-
-- `isFavorite` already exists on both `Item` and `Collection` models in the Prisma schema
-- ItemDrawer already has a Favorite button in the action bar (currently toggles local state only — needs to persist via server action)
-- CollectionActions on `/collections/[id]` already has a Favorite button marked "UI-only" — needs wiring
-- CollectionCard dropdown already has a Favorite option marked "UI-only" — needs wiring
-- Use existing `updateItem` or add a dedicated `toggleFavoriteItem` server action (lean toward minimal — reuse updateItem if clean)
-- Add `toggleFavoriteCollection` server action in `src/actions/collections.ts`
-- After toggle: call `router.refresh()` so sidebar favorites and /favorites page stay in sync
-- Write unit tests for any new server actions
 
 ## History
 
@@ -67,3 +50,4 @@ In Progress
 - **2026-05-04** — Completed Settings Page: /settings route (protected via proxy + layout auth check); ChangePasswordForm and DeleteAccountSection moved from /profile to /settings; /profile retains user info and usage stats only; "Settings" link added to sidebar user dropdown between Profile and Sign out
 - **2026-05-05** — Completed Editor Preferences Settings: editorPreferences Json column on User with Prisma migration; EditorPreferencesContext auto-saves on change with toast; updateEditorPreferences server action (Zod validation + auth); EditorPreferencesForm on /settings with theme (vs-dark/monokai/github-dark), font size, tab size dropdowns and word wrap/minimap toggles; CodeEditor reads all preferences from context including custom monokai and github-dark Monaco themes; provider placed at outermost layout level so ItemDrawer's CodeEditor is in scope; 7 unit tests
 - **2026-05-05** — Completed Favorites Page: star icon in TopBar links to /favorites (protected via proxy); getFavoriteItems and getFavoriteCollections DB functions (filter isFavorite=true, ordered by updatedAt desc); compact monospace list view with separate Items and Collections sections showing type icon, title, type badge, and date; click item opens ItemDrawer, click collection navigates to /collections/[id]; empty state when no favorites
+- **2026-05-05** — Completed Favorite Toggle: wired all UI-only favorite placeholders to real DB persistence; toggleFavoriteItem and toggleFavoriteCollection DB functions + server actions; ItemDrawer Star button, CollectionActions Heart button on /collections/[id], and CollectionCard 3-dots dropdown all call actions, update local state immediately, call router.refresh() to sync sidebar and /favorites page; 9 new unit tests
