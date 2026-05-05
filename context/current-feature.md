@@ -1,25 +1,12 @@
-# Current Feature: Client-Side Sorting on Favorites Page
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Add a sort control to the favorites page that lets users sort by name, date, and item type
-- Sorting applies to both the Items and Collections sections independently
-- Sort state is client-side only (no URL params, no server round-trip)
-- Default sort is by date (most recent first), matching current behavior
-- Sort UI is minimal and consistent with the existing page style
-
 ## Notes
-
-- The favorites page is at `/favorites` and currently renders items and collections fetched server-side via `getFavoriteItems` and `getFavoriteCollections`
-- Items have: title, type (icon + name), updatedAt
-- Collections have: name, updatedAt (no type concept)
-- Sort options: Name (A–Z), Date (newest first), Item Type (for items only; N/A for collections)
-- Implementation should be a client component wrapper around the existing list — avoid converting the whole page to a client component
-- No new DB functions needed; sort is purely in-memory on the already-fetched data
 
 ## History
 
@@ -64,3 +51,4 @@ In Progress
 - **2026-05-05** — Completed Editor Preferences Settings: editorPreferences Json column on User with Prisma migration; EditorPreferencesContext auto-saves on change with toast; updateEditorPreferences server action (Zod validation + auth); EditorPreferencesForm on /settings with theme (vs-dark/monokai/github-dark), font size, tab size dropdowns and word wrap/minimap toggles; CodeEditor reads all preferences from context including custom monokai and github-dark Monaco themes; provider placed at outermost layout level so ItemDrawer's CodeEditor is in scope; 7 unit tests
 - **2026-05-05** — Completed Favorites Page: star icon in TopBar links to /favorites (protected via proxy); getFavoriteItems and getFavoriteCollections DB functions (filter isFavorite=true, ordered by updatedAt desc); compact monospace list view with separate Items and Collections sections showing type icon, title, type badge, and date; click item opens ItemDrawer, click collection navigates to /collections/[id]; empty state when no favorites
 - **2026-05-05** — Completed Favorite Toggle: wired all UI-only favorite placeholders to real DB persistence; toggleFavoriteItem and toggleFavoriteCollection DB functions + server actions; ItemDrawer Star button, CollectionActions Heart button on /collections/[id], and CollectionCard 3-dots dropdown all call actions, update local state immediately, call router.refresh() to sync sidebar and /favorites page; 9 new unit tests
+- **2026-05-05** — Completed Favorites Sorting: FavoritesSortedList client component wraps the favorites page lists; Items sortable by Date/Name/Type, Collections by Date/Name; clicking the active sort button toggles asc/desc with ↑/↓ arrow indicator; default is Date desc; added updatedAt to ItemWithMeta and FavoriteCollection types
