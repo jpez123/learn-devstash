@@ -40,7 +40,7 @@ beforeEach(() => {
 
 describe('createCollection', () => {
   it('returns unauthorized when no session', async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
     const result = await createCollection({ name: 'Test' });
     expect(result).toEqual({ success: false, error: 'Unauthorized' });
   });
@@ -88,7 +88,7 @@ describe('createCollection', () => {
 
 describe('updateCollection', () => {
   it('returns unauthorized when no session', async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
     const result = await updateCollection('col-1', { name: 'Updated' });
     expect(result).toEqual({ success: false, error: 'Unauthorized' });
   });
@@ -131,7 +131,7 @@ describe('updateCollection', () => {
 
 describe('deleteCollection', () => {
   it('returns unauthorized when no session', async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
     const result = await deleteCollection('col-1');
     expect(result).toEqual({ success: false, error: 'Unauthorized' });
   });

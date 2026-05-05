@@ -133,8 +133,19 @@ export type CollectionWithMeta = {
   types: { icon: string; color: string }[];
 };
 
-export async function getAllCollections(userId: string): Promise<CollectionWithMeta[]> {
-  return getCollectionList(userId);
+export type PaginatedCollections = {
+  collections: CollectionWithMeta[];
+  total: number;
+};
+
+export async function getAllCollections(
+  userId: string,
+  page = 1,
+  pageSize = 21
+): Promise<PaginatedCollections> {
+  const total = await prisma.collection.count({ where: { userId } });
+  const collections = await getCollectionList(userId, pageSize, (page - 1) * pageSize);
+  return { collections, total };
 }
 
 export async function getRecentCollections(userId: string, limit = 6): Promise<CollectionWithMeta[]> {
@@ -153,30 +164,31 @@ export type CollectionWithItems = {
 
 export async function getCollectionWithItems(
   id: string,
-  userId: string
+  userId: string,
+  page = 1,
+  pageSize = 21
 ): Promise<CollectionWithItems | null> {
   const col = await prisma.collection.findFirst({
     where: { id, userId },
-    include: {
-      items: {
-        orderBy: { addedAt: 'desc' },
-        include: {
-          item: {
-            include: {
-              itemType: { select: { name: true, icon: true, color: true } },
-              tags: { include: { tag: { select: { name: true } } } },
-            },
-          },
-        },
-      },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      isFavorite: true,
     },
   });
 
   if (!col) return null;
 
+  // Get type breakdown across ALL items (for header icons)
+  const allTypeRows = await prisma.itemCollection.findMany({
+    where: { collectionId: id },
+    select: { item: { select: { itemType: { select: { icon: true, color: true } } } } },
+  });
+
   const typeCounts = new Map<string, { icon: string; color: string; count: number }>();
-  for (const ic of col.items) {
-    const t = ic.item.itemType;
+  for (const row of allTypeRows) {
+    const t = row.item.itemType;
     const existing = typeCounts.get(t.icon);
     if (existing) existing.count++;
     else typeCounts.set(t.icon, { icon: t.icon, color: t.color, count: 1 });
@@ -185,7 +197,25 @@ export async function getCollectionWithItems(
     .sort((a, b) => b.count - a.count)
     .map(({ icon, color }) => ({ icon, color }));
 
-  const items: ItemWithMeta[] = col.items.map((ic) => ({
+  const itemCount = allTypeRows.length;
+
+  // Paginated items for display
+  const pageRows = await prisma.itemCollection.findMany({
+    where: { collectionId: id },
+    orderBy: { addedAt: 'desc' },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    include: {
+      item: {
+        include: {
+          itemType: { select: { name: true, icon: true, color: true } },
+          tags: { include: { tag: { select: { name: true } } } },
+        },
+      },
+    },
+  });
+
+  const items: ItemWithMeta[] = pageRows.map((ic) => ({
     id: ic.item.id,
     title: ic.item.title,
     description: ic.item.description,
@@ -206,13 +236,13 @@ export async function getCollectionWithItems(
     name: col.name,
     description: col.description,
     isFavorite: col.isFavorite,
-    itemCount: col.items.length,
+    itemCount,
     types,
     items,
   };
 }
 
-async function getCollectionList(userId: string, limit?: number): Promise<CollectionWithMeta[]> {
+async function getCollectionList(userId: string, limit?: number, offset?: number): Promise<CollectionWithMeta[]> {
   const collections = await prisma.collection.findMany({
     where: { userId },
     include: {
@@ -230,6 +260,7 @@ async function getCollectionList(userId: string, limit?: number): Promise<Collec
     },
     orderBy: { updatedAt: 'desc' },
     take: limit,
+    skip: offset,
   });
 
   return collections.map((col) => {

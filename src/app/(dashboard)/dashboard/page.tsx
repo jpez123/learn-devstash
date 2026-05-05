@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { getRecentCollections } from '@/lib/db/collections';
 import { getPinnedItems, getRecentItems } from '@/lib/db/items';
+import { DASHBOARD_COLLECTIONS_LIMIT, DASHBOARD_RECENT_ITEMS_LIMIT } from '@/lib/constants';
 import StatsCard from '@/components/dashboard/StatsCard';
 import CollectionCard from '@/components/collections/CollectionCard';
 import ItemRow from '@/components/items/ItemRow';
@@ -16,12 +17,12 @@ export default async function DashboardPage() {
 
   const [collections, totalItems, favoriteItems, totalCollections, pinnedItems, recentItems] =
     await Promise.all([
-      getRecentCollections(userId),
+      getRecentCollections(userId, DASHBOARD_COLLECTIONS_LIMIT),
       prisma.item.count({ where: { userId } }),
       prisma.item.count({ where: { userId, isFavorite: true } }),
       prisma.collection.count({ where: { userId } }),
       getPinnedItems(userId),
-      getRecentItems(userId),
+      getRecentItems(userId, DASHBOARD_RECENT_ITEMS_LIMIT),
     ]);
 
   const favoriteCollections = collections.filter((c) => c.isFavorite).length;

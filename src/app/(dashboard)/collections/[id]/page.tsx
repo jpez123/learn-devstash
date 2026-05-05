@@ -2,23 +2,30 @@ import { notFound, redirect } from 'next/navigation';
 import { Heart } from 'lucide-react';
 import { auth } from '@/auth';
 import { getCollectionWithItems } from '@/lib/db/collections';
+import { COLLECTIONS_PER_PAGE } from '@/lib/constants';
 import TypeIcon from '@/components/ui/TypeIcon';
 import ItemCard from '@/components/items/ItemCard';
 import ImageCard from '@/components/items/ImageCard';
 import FileListRow from '@/components/items/FileListRow';
 import CollectionActions from '@/components/collections/CollectionActions';
+import Pagination from '@/components/ui/Pagination';
 
 export default async function CollectionPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const { id } = await params;
+  const [{ id }, { page: pageParam }] = await Promise.all([params, searchParams]);
   const session = await auth();
   if (!session?.user?.id) redirect('/sign-in');
 
-  const collection = await getCollectionWithItems(id, session.user.id);
+  const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
+  const collection = await getCollectionWithItems(id, session.user.id, page, COLLECTIONS_PER_PAGE);
   if (!collection) notFound();
+
+  const totalPages = Math.ceil(collection.itemCount / COLLECTIONS_PER_PAGE);
 
   const imageItems = collection.items.filter((i) => i.itemType.name === 'image');
   const fileItems = collection.items.filter((i) => i.itemType.name === 'file');
@@ -68,31 +75,34 @@ export default async function CollectionPage({
           <p className="text-sm text-muted-foreground">No items in this collection yet.</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {imageItems.length > 0 && (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {imageItems.map((item) => (
-                <ImageCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
+        <>
+          <div className="space-y-6">
+            {imageItems.length > 0 && (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {imageItems.map((item) => (
+                  <ImageCard key={item.id} item={item} />
+                ))}
+              </div>
+            )}
 
-          {fileItems.length > 0 && (
-            <div className="flex flex-col gap-2">
-              {fileItems.map((item) => (
-                <FileListRow key={item.id} item={item} />
-              ))}
-            </div>
-          )}
+            {fileItems.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {fileItems.map((item) => (
+                  <FileListRow key={item.id} item={item} />
+                ))}
+              </div>
+            )}
 
-          {otherItems.length > 0 && (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {otherItems.map((item) => (
-                <ItemCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
-        </div>
+            {otherItems.length > 0 && (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {otherItems.map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            )}
+          </div>
+          <Pagination page={page} totalPages={totalPages} />
+        </>
       )}
     </div>
   );

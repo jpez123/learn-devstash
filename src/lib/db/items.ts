@@ -299,20 +299,33 @@ export async function getPinnedItems(userId: string): Promise<ItemWithMeta[]> {
   return items.map(toItemWithMeta);
 }
 
-export async function getItemsByType(userId: string, typeName: string): Promise<ItemWithMeta[]> {
-  const items = await prisma.item.findMany({
-    where: {
-      userId,
-      itemType: { name: typeName },
-    },
-    include: {
-      itemType: { select: { name: true, icon: true, color: true } },
-      tags: { include: { tag: { select: { name: true } } } },
-    },
-    orderBy: { createdAt: 'desc' },
-  });
+export type PaginatedItems = {
+  items: ItemWithMeta[];
+  total: number;
+};
 
-  return items.map(toItemWithMeta);
+export async function getItemsByType(
+  userId: string,
+  typeName: string,
+  page = 1,
+  pageSize = 21
+): Promise<PaginatedItems> {
+  const where = { userId, itemType: { name: typeName } };
+  const [total, items] = await Promise.all([
+    prisma.item.count({ where }),
+    prisma.item.findMany({
+      where,
+      include: {
+        itemType: { select: { name: true, icon: true, color: true } },
+        tags: { include: { tag: { select: { name: true } } } },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+  ]);
+
+  return { items: items.map(toItemWithMeta), total };
 }
 
 export async function getRecentItems(userId: string, limit = 10): Promise<ItemWithMeta[]> {
