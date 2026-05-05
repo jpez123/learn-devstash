@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from "next/link";
-import { Search, Plus, Package, Menu } from "lucide-react";
+import { Search, Plus, Package, Menu, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarProvider";
 import { useSearch } from "@/context/SearchContext";
@@ -51,6 +51,9 @@ export default function TopBar() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 w-48 justify-end shrink-0">
+          <Link href="/favorites" className="hidden sm:flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors" aria-label="Favorites">
+            <Star className="h-4 w-4" />
+          </Link>
           <Button size="sm" variant="outline" className="hidden sm:flex" onClick={() => setCreateCollectionOpen(true)}>
             New Collection
           </Button>

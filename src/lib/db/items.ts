@@ -341,3 +341,16 @@ export async function getRecentItems(userId: string, limit = 10): Promise<ItemWi
 
   return items.map(toItemWithMeta);
 }
+
+export async function getFavoriteItems(userId: string): Promise<ItemWithMeta[]> {
+  const items = await prisma.item.findMany({
+    where: { userId, isFavorite: true },
+    include: {
+      itemType: { select: { name: true, icon: true, color: true } },
+      tags: { include: { tag: { select: { name: true } } } },
+    },
+    orderBy: { updatedAt: 'desc' },
+  });
+
+  return items.map(toItemWithMeta);
+}
