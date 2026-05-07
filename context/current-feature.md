@@ -1,12 +1,33 @@
-# Current Feature
+# Current Feature: Homepage
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Public marketing homepage at `/` with auth redirect to `/dashboard` for signed-in users
+- Separate `(marketing)` route group with its own minimal layout (no sidebar/dashboard shell)
+- Navbar with logo, nav links, Sign In / Get Started buttons; mobile hamburger
+- Hero section with animated chaos-to-order visual (`HeroChaosAnimation` client component)
+- Features section with 6 color-coded cards using Lucide icons
+- AI section with Pro badge, checklist, and static code editor mockup
+- Pricing section with monthly/yearly toggle (client component) — Free and Pro cards
+- CTA section and Footer with link columns
+- Fully responsive, dark theme matching dashboard, gradient headline text
+
 ## Notes
+
+- Route: `src/app/(marketing)/page.tsx` + `src/app/(marketing)/layout.tsx`
+- Server components: Navbar, HeroSection, FeaturesSection, AISection, CTASection, Footer
+- Client components: HeroChaosAnimation (drift/bounce/mouse-repulsion via rAF), PricingSection (billing toggle), MobileNav (hamburger state)
+- No data fetching — fully static content
+- Do NOT reuse the dashboard layout
+- Styling: Tailwind CSS v4 + shadcn/ui, `bg-background` dark base, gradient text `from-blue-500 to-purple-500`
+- Feature card colors: blue `#3b82f6`, amber `#f59e0b`, green `#22c55e`, cyan `#06b6d4`, slate `#64748b`, indigo `#6366f1`
+- Pricing: Free $0, Pro $8/mo or $6/mo billed yearly ($72/yr)
+- Links: Sign In → `/sign-in`, Get Started → `/register`, Features → `#features`, Pricing → `#pricing`
+- Animation: port chaos icons from `prototypes/homepage/script.js` into `HeroChaosAnimation.tsx`; use CSS transitions where possible
 
 ## History
 
