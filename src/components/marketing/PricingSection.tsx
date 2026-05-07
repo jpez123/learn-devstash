@@ -42,8 +42,9 @@ export function PricingSection() {
             <button
               role="switch"
               aria-checked={yearly}
+              aria-label="Toggle yearly billing"
               onClick={() => setYearly(!yearly)}
-              className="relative w-[44px] h-6 rounded-full transition-colors duration-200 cursor-pointer"
+              className="relative w-[44px] h-6 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3b82f6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
               style={{
                 background: yearly ? 'rgba(59,130,246,0.2)' : '#21262d',
                 border: yearly ? '1px solid #3b82f6' : '1px solid #30363d',

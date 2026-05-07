@@ -34,9 +34,9 @@ export function HeroSection() {
       </FadeIn>
 
       {/* Visual — full width below */}
-      <FadeIn delay={150} className="flex items-center gap-5 w-full max-w-[900px]">
+      <FadeIn delay={150} className="flex flex-col sm:flex-row items-center gap-5 w-full max-w-[900px]">
         {/* Chaos box */}
-        <div className="flex-1 min-w-0">
+        <div className="w-full sm:flex-1 sm:min-w-0">
           <p className="text-[0.72rem] text-[#8b949e] uppercase tracking-[0.08em] mb-2.5 text-center">
             Your knowledge today...
           </p>
@@ -48,11 +48,20 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Arrow */}
+        {/* Arrow — horizontal on desktop, vertical on mobile */}
         <div className="flex-shrink-0 text-[#3b82f6]">
-          <svg viewBox="0 0 36 24" fill="none" className="w-9 h-6 hero-arrow">
+          <svg viewBox="0 0 36 24" fill="none" className="hidden sm:block w-9 h-6 hero-arrow">
             <path
               d="M0 12 H26 M14 2 L26 12 L14 22"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <svg viewBox="0 0 24 36" fill="none" className="sm:hidden w-6 h-9 hero-arrow">
+            <path
+              d="M12 0 V26 M2 14 L12 26 L22 14"
               stroke="currentColor"
               strokeWidth="2.5"
               strokeLinecap="round"
@@ -62,7 +71,7 @@ export function HeroSection() {
         </div>
 
         {/* Dashboard mockup */}
-        <div className="flex-1 min-w-0">
+        <div className="w-full sm:flex-1 sm:min-w-0">
           <p className="text-[0.72rem] text-[#8b949e] uppercase tracking-[0.08em] mb-2.5 text-center">
             ...with DevStash
           </p>

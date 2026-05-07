@@ -19,7 +19,7 @@ export function MobileNav() {
 
       {open && (
         <div
-          className="md:hidden absolute top-full left-0 right-0 flex flex-col gap-1 py-3 px-6"
+          className="md:hidden absolute top-full left-0 right-0 z-50 flex flex-col gap-1 py-3 px-6"
           style={{ background: '#0d1117', borderTop: '1px solid #30363d' }}
         >
           <a href="#features" className="text-[0.95rem] py-2 text-[#8b949e] hover:text-[#e6edf3] transition-colors" onClick={() => setOpen(false)}>

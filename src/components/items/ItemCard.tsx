@@ -29,8 +29,11 @@ export default function ItemCard({ item }: { item: ItemWithMeta }) {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => openDrawer(item.id)}
-      className="group flex cursor-pointer flex-col gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(item.id); } }}
+      className="group flex cursor-pointer flex-col gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       style={{ borderLeftColor: itemType.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}
     >
       <div className="flex items-start justify-between gap-2">

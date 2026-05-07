@@ -29,8 +29,11 @@ export default function ItemRow({ item }: { item: ItemWithMeta }) {
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={() => openDrawer(item.id)}
-      className="group flex cursor-pointer items-center gap-3 bg-card px-4 py-3 transition-colors hover:bg-accent/50"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(item.id); } }}
+      className="group flex cursor-pointer items-center gap-3 bg-card px-4 py-3 transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       style={{ borderLeftColor: itemType.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}
     >
       <div

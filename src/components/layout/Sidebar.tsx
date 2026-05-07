@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { Heart, Settings, X, PanelLeft, ChevronDown, LogOut, User } from 'lucide-react';
 import { useSidebar } from './SidebarProvider';
@@ -32,6 +32,7 @@ function SidebarInner({
   user,
 }: { collapsed: boolean } & SidebarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [typesOpen, setTypesOpen] = useState(true);
   const [collectionsOpen, setCollectionsOpen] = useState(true);
 
@@ -55,11 +56,15 @@ function SidebarInner({
           <nav className="space-y-0.5">
             {itemTypes.map((type) => {
               const slug = type.name.toLowerCase() + 's';
+              const href = `/items/${slug}`;
+              const isActive = pathname === href;
               return (
                 <Link
                   key={type.id}
-                  href={`/items/${slug}`}
-                  className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  href={href}
+                  className={`flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-foreground ${
+                    isActive ? 'bg-accent text-foreground font-medium' : 'text-muted-foreground'
+                  }`}
                   title={collapsed ? `${type.name.charAt(0).toUpperCase() + type.name.slice(1)}s` : undefined}
                 >
                   <TypeIcon iconName={type.icon} color={type.color} size={15} />
@@ -108,7 +113,9 @@ function SidebarInner({
                         <Link
                           key={col.id}
                           href={`/collections/${col.id}`}
-                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                          className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-foreground ${
+                            pathname === `/collections/${col.id}` ? 'bg-accent text-foreground font-medium' : 'text-muted-foreground'
+                          }`}
                         >
                           <span className="flex-1 truncate">{col.name}</span>
                           <Heart size={11} className="shrink-0 fill-pink-400 text-pink-400" />
@@ -127,7 +134,9 @@ function SidebarInner({
                         <Link
                           key={col.id}
                           href={`/collections/${col.id}`}
-                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                          className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-foreground ${
+                            pathname === `/collections/${col.id}` ? 'bg-accent text-foreground font-medium' : 'text-muted-foreground'
+                          }`}
                         >
                           {col.dominantType && (
                             <span

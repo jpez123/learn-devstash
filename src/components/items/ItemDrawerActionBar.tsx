@@ -1,7 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { Star, Pin, Copy, Pencil, Trash2, Check, X, Download } from 'lucide-react';
 import type { ItemDetail } from '@/lib/db/items';
+
+const TEXT_TYPES = ['snippet', 'prompt', 'command', 'note'];
 
 const FILE_TYPES = ['file', 'image'];
 
@@ -66,8 +69,24 @@ export default function ItemDrawerActionBar({
   onFavorite,
   onPin,
 }: ItemDrawerActionBarProps) {
+  const [copied, setCopied] = useState(false);
+
+  const copyValue =
+    item.itemType.name === 'link'
+      ? item.url
+      : TEXT_TYPES.includes(item.itemType.name)
+      ? item.content
+      : null;
+
+  async function handleCopy() {
+    if (!copyValue) return;
+    await navigator.clipboard.writeText(copyValue);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
   return (
-    <div className="flex items-center gap-1 border-b border-border px-4 py-2">
+    <div className="flex flex-wrap items-center gap-1 border-b border-border px-4 py-2">
       {isEditMode ? (
         <>
           <ActionButton
@@ -98,7 +117,13 @@ export default function ItemDrawerActionBar({
             active={item.isPinned}
             onClick={onPin}
           />
-          <ActionButton icon={<Copy size={14} />} label="Copy" />
+          {copyValue && (
+            <ActionButton
+              icon={copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+              label="Copy"
+              onClick={handleCopy}
+            />
+          )}
           {FILE_TYPES.includes(item.itemType.name) && item.fileUrl && (
             <a
               href={`/api/download?key=${encodeURIComponent(item.fileUrl)}`}
@@ -109,9 +134,7 @@ export default function ItemDrawerActionBar({
             </a>
           )}
           <ActionButton icon={<Pencil size={14} />} label="Edit" onClick={onEdit} />
-          <div className="ml-auto">
-            <ActionButton icon={<Trash2 size={14} />} label="Delete" danger onClick={onDelete} />
-          </div>
+          <ActionButton icon={<Trash2 size={14} />} label="Delete" danger onClick={onDelete} />
         </>
       )}
     </div>

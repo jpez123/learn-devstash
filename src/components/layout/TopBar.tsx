@@ -47,11 +47,11 @@ export default function TopBar() {
         <div className="flex flex-1 items-center justify-center">
           <button
             onClick={() => openSearch(true)}
-            className="flex h-8 w-full max-w-sm items-center gap-2 rounded-md border-0 bg-muted/50 px-3 text-sm text-muted-foreground hover:bg-muted/80 transition-colors"
+            className="flex h-8 w-full max-w-lg items-center gap-2 rounded-md border-0 bg-muted/50 px-3 text-sm text-muted-foreground hover:bg-muted/80 transition-colors"
           >
             <Search className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left">Search items...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-border bg-background px-1.5 text-[10px] font-medium">
+            <kbd className="hidden lg:inline-flex h-5 items-center gap-0.5 rounded border border-border bg-background px-1.5 text-[10px] font-medium">
               <span>⌘</span>K
             </kbd>
           </button>
