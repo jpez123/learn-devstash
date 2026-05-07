@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Package } from 'lucide-react'
 import { MobileNav } from './MobileNav'
 
 export function Navbar() {
@@ -9,15 +10,17 @@ export function Navbar() {
     >
       <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center gap-8 relative">
         <Link href="/" className="flex items-center gap-2 font-bold text-[1.1rem] text-[#e6edf3]">
-          <span className="text-[1.3rem]">⚡</span>
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+            <Package className="h-4 w-4 text-primary-foreground" />
+          </div>
           <span>DevStash</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-6 ml-auto">
-          <a href="#features" className="text-sm text-[#8b949e] hover:text-[#e6edf3] transition-colors">
+          <a href="/#features" className="text-sm text-[#8b949e] hover:text-[#e6edf3] transition-colors">
             Features
           </a>
-          <a href="#pricing" className="text-sm text-[#8b949e] hover:text-[#e6edf3] transition-colors">
+          <a href="/#pricing" className="text-sm text-[#8b949e] hover:text-[#e6edf3] transition-colors">
             Pricing
           </a>
         </div>

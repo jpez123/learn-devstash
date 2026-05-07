@@ -6,7 +6,8 @@ import { signInWithGitHub } from '@/actions/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Package, GitBranch } from 'lucide-react';
+import { GitBranch } from 'lucide-react';
+import { Navbar } from '@/components/marketing/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -76,17 +77,11 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="flex min-h-screen flex-col bg-background">
+      <Navbar />
       <Suspense><ParamToasts /></Suspense>
+      <div className="flex flex-1 items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-6">
-        {/* Logo */}
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <Package className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold">DevStash</span>
-        </div>
-
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl">Sign in</CardTitle>
@@ -153,6 +148,7 @@ export default function SignInPage() {
             </p>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
