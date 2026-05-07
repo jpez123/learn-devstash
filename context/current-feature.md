@@ -1,33 +1,12 @@
-# Current Feature: Homepage
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Public marketing homepage at `/` with auth redirect to `/dashboard` for signed-in users
-- Separate `(marketing)` route group with its own minimal layout (no sidebar/dashboard shell)
-- Navbar with logo, nav links, Sign In / Get Started buttons; mobile hamburger
-- Hero section with animated chaos-to-order visual (`HeroChaosAnimation` client component)
-- Features section with 6 color-coded cards using Lucide icons
-- AI section with Pro badge, checklist, and static code editor mockup
-- Pricing section with monthly/yearly toggle (client component) — Free and Pro cards
-- CTA section and Footer with link columns
-- Fully responsive, dark theme matching dashboard, gradient headline text
-
 ## Notes
-
-- Route: `src/app/(marketing)/page.tsx` + `src/app/(marketing)/layout.tsx`
-- Server components: Navbar, HeroSection, FeaturesSection, AISection, CTASection, Footer
-- Client components: HeroChaosAnimation (drift/bounce/mouse-repulsion via rAF), PricingSection (billing toggle), MobileNav (hamburger state)
-- No data fetching — fully static content
-- Do NOT reuse the dashboard layout
-- Styling: Tailwind CSS v4 + shadcn/ui, `bg-background` dark base, gradient text `from-blue-500 to-purple-500`
-- Feature card colors: blue `#3b82f6`, amber `#f59e0b`, green `#22c55e`, cyan `#06b6d4`, slate `#64748b`, indigo `#6366f1`
-- Pricing: Free $0, Pro $8/mo or $6/mo billed yearly ($72/yr)
-- Links: Sign In → `/sign-in`, Get Started → `/register`, Features → `#features`, Pricing → `#pricing`
-- Animation: port chaos icons from `prototypes/homepage/script.js` into `HeroChaosAnimation.tsx`; use CSS transitions where possible
 
 ## History
 
@@ -74,4 +53,5 @@ In Progress
 - **2026-05-05** — Completed Favorite Toggle: wired all UI-only favorite placeholders to real DB persistence; toggleFavoriteItem and toggleFavoriteCollection DB functions + server actions; ItemDrawer Star button, CollectionActions Heart button on /collections/[id], and CollectionCard 3-dots dropdown all call actions, update local state immediately, call router.refresh() to sync sidebar and /favorites page; 9 new unit tests
 - **2026-05-05** — Completed Favorites Sorting: FavoritesSortedList client component wraps the favorites page lists; Items sortable by Date/Name/Type, Collections by Date/Name; clicking the active sort button toggles asc/desc with ↑/↓ arrow indicator; default is Date desc; added updatedAt to ItemWithMeta and FavoriteCollection types
 - **2026-05-05** — Completed Pinned Items: toggleItemPin DB function + server action (auth + ownership check); Pin button in ItemDrawer wired with optimistic UI and toast; getItemsByType orders pinned items to top ([isPinned desc, createdAt desc]); Pin icon added as static indicator on ItemCard next to favorite star; 4 new unit tests
+- **2026-05-06** — Completed Homepage: static marketing page at `/` (replaces placeholder); auth redirect to `/dashboard` for signed-in users; Navbar (sticky, blur, mobile hamburger via MobileNav client component); HeroSection with HeroChaosAnimation (8 icon cards, rAF drift/bounce/mouse-repulsion, 280px arena), pulsing arrow, dashboard mockup; FeaturesSection (6 color-coded cards, per-card hover border color, client component); AISection with code editor mockup + blue AI tags; PricingSection with monthly/yearly toggle; CTASection; Footer with 3 link columns; FadeIn client component (IntersectionObserver, 0.12 threshold, staggered delays); anchor links use `<a>` not `<Link>`; `scroll-behavior: smooth` added globally; GitHub dark color scheme (#0d1117 / #161b22 / #21262d) matching prototype
 - **2026-05-06** — Completed Homepage Mockup: static marketing prototype at prototypes/homepage/ (index.html, styles.css, script.js); chaos-to-order hero with 8 animated floating icons (drift, bounce, mouse repulsion via requestAnimationFrame), pulsing arrow, dashboard preview mockup; fixed navbar with scroll opacity; gradient headline + CTA; 6-card features grid; AI section with code editor mockup and tag demo; pricing cards with Free/Pro and yearly billing toggle; scroll fade-in animations; fully responsive with mobile stacking and downward arrow
