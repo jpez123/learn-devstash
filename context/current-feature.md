@@ -1,12 +1,30 @@
-# Current Feature
+# Current Feature: Homepage Mockup
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Create a static marketing homepage at `prototypes/homepage/` (index.html, styles.css, script.js)
+- Hero section showing "chaos to order" concept: chaos container (left), pulsing arrow (center), dashboard preview (right)
+- Chaos icons animate with requestAnimationFrame — drift, bounce off walls, repel from mouse cursor
+- Fixed top nav with logo, Features/Pricing links, Sign In/Get Started buttons (gets opaque on scroll)
+- Hero text: gradient headline, subheadline, CTA buttons
+- Features section: 6 cards (Snippets, Prompts, Search, Commands, Files, Collections) with type accent colors
+- AI section: Pro badge + AI feature checklist (left), code editor mockup with AI tag demo (right)
+- Pricing section: Free vs Pro cards, yearly toggle ($0 / $8mo / $72yr), "Most Popular" badge on Pro
+- CTA section and footer with logo, links, copyright year
+- Scroll animations: elements fade in on scroll
+- Responsive: mobile stacks chaos/arrow/dashboard vertically, arrow rotates 90° on mobile
+
 ## Notes
+
+- Output is plain HTML/CSS/JS — no Next.js or build tools, standalone prototype only
+- Dark theme with item type accent colors: Snippet #3b82f6, Prompt #f59e0b, Command #06b6d4, Note #22c55e, File #64748b, Image #ec4899, URL #6366f1
+- Chaos container shows 8 floating icons: Notion, GitHub, Slack, VS Code, browser tabs, Terminal, text file, bookmark
+- Dashboard preview shows sidebar + colored-border item cards (simplified mockup, not real app)
+- Icons use SVG or emoji/unicode; no external icon library required unless simple CDN link acceptable
 
 ## History
 
