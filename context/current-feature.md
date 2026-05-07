@@ -1,30 +1,12 @@
-# Current Feature: Homepage Mockup
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create a static marketing homepage at `prototypes/homepage/` (index.html, styles.css, script.js)
-- Hero section showing "chaos to order" concept: chaos container (left), pulsing arrow (center), dashboard preview (right)
-- Chaos icons animate with requestAnimationFrame — drift, bounce off walls, repel from mouse cursor
-- Fixed top nav with logo, Features/Pricing links, Sign In/Get Started buttons (gets opaque on scroll)
-- Hero text: gradient headline, subheadline, CTA buttons
-- Features section: 6 cards (Snippets, Prompts, Search, Commands, Files, Collections) with type accent colors
-- AI section: Pro badge + AI feature checklist (left), code editor mockup with AI tag demo (right)
-- Pricing section: Free vs Pro cards, yearly toggle ($0 / $8mo / $72yr), "Most Popular" badge on Pro
-- CTA section and footer with logo, links, copyright year
-- Scroll animations: elements fade in on scroll
-- Responsive: mobile stacks chaos/arrow/dashboard vertically, arrow rotates 90° on mobile
-
 ## Notes
-
-- Output is plain HTML/CSS/JS — no Next.js or build tools, standalone prototype only
-- Dark theme with item type accent colors: Snippet #3b82f6, Prompt #f59e0b, Command #06b6d4, Note #22c55e, File #64748b, Image #ec4899, URL #6366f1
-- Chaos container shows 8 floating icons: Notion, GitHub, Slack, VS Code, browser tabs, Terminal, text file, bookmark
-- Dashboard preview shows sidebar + colored-border item cards (simplified mockup, not real app)
-- Icons use SVG or emoji/unicode; no external icon library required unless simple CDN link acceptable
 
 ## History
 
@@ -71,3 +53,4 @@ In Progress
 - **2026-05-05** — Completed Favorite Toggle: wired all UI-only favorite placeholders to real DB persistence; toggleFavoriteItem and toggleFavoriteCollection DB functions + server actions; ItemDrawer Star button, CollectionActions Heart button on /collections/[id], and CollectionCard 3-dots dropdown all call actions, update local state immediately, call router.refresh() to sync sidebar and /favorites page; 9 new unit tests
 - **2026-05-05** — Completed Favorites Sorting: FavoritesSortedList client component wraps the favorites page lists; Items sortable by Date/Name/Type, Collections by Date/Name; clicking the active sort button toggles asc/desc with ↑/↓ arrow indicator; default is Date desc; added updatedAt to ItemWithMeta and FavoriteCollection types
 - **2026-05-05** — Completed Pinned Items: toggleItemPin DB function + server action (auth + ownership check); Pin button in ItemDrawer wired with optimistic UI and toast; getItemsByType orders pinned items to top ([isPinned desc, createdAt desc]); Pin icon added as static indicator on ItemCard next to favorite star; 4 new unit tests
+- **2026-05-06** — Completed Homepage Mockup: static marketing prototype at prototypes/homepage/ (index.html, styles.css, script.js); chaos-to-order hero with 8 animated floating icons (drift, bounce, mouse repulsion via requestAnimationFrame), pulsing arrow, dashboard preview mockup; fixed navbar with scroll opacity; gradient headline + CTA; 6-card features grid; AI section with code editor mockup and tag demo; pricing cards with Free/Pro and yearly billing toggle; scroll fade-in animations; fully responsive with mobile stacking and downward arrow
