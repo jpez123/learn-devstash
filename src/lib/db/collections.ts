@@ -27,6 +27,12 @@ export async function createCollection(
   userId: string,
   data: { name: string; description?: string | null }
 ): Promise<CollectionDetail> {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { isPro: true } });
+  if (!user?.isPro) {
+    const count = await prisma.collection.count({ where: { userId } });
+    if (count >= 3) throw new Error('Free tier limit reached: 3 collections. Upgrade to Pro for unlimited collections.');
+  }
+
   return prisma.collection.create({
     data: {
       userId,

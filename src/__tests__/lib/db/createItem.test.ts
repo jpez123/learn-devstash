@@ -2,18 +2,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
-    itemType: {
-      findFirst: vi.fn(),
-    },
-    item: {
-      create: vi.fn(),
-    },
+    user: { findUnique: vi.fn() },
+    itemType: { findFirst: vi.fn() },
+    item: { count: vi.fn(), create: vi.fn() },
   },
 }));
 
 import { prisma } from '@/lib/prisma';
 import { createItem } from '@/lib/db/items';
 
+const mockUserFindUnique = vi.mocked(prisma.user.findUnique);
 const mockFindFirst = vi.mocked(prisma.itemType.findFirst);
 const mockCreate = vi.mocked(prisma.item.create);
 
@@ -37,6 +35,7 @@ const createdItem = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockUserFindUnique.mockResolvedValue({ isPro: true } as never);
 });
 
 describe('createItem', () => {
