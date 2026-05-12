@@ -1,39 +1,12 @@
-# Current Feature: Stripe Integration — Phase 1: Core Infrastructure
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Install `stripe` npm package and create client singleton (`src/lib/stripe.ts`)
-- Create helper utilities (`src/lib/stripe-util.ts`) — `getOrCreateStripeCustomer`, `createCheckoutSession`, `createPortalSession`
-- Create server actions (`src/actions/stripe.ts`) — `createCheckoutAction`, `getPortalSessionAction`
-- Update `src/auth.ts` JWT callback to always sync `isPro` from DB on every session validation
-- Extend `Session` type with `isPro: boolean` in `src/types/next-auth.d.ts`
-- Add 50-item free-tier guard to `createItem` in `src/lib/db/items.ts`
-- Add 3-collection free-tier guard to `createCollection` in `src/lib/db/collections.ts`
-- Add `isPro` guard to `src/app/api/upload/route.ts` (403 for free users)
-- Add Stripe env vars to `.env.example`
-- Unit tests for free-tier enforcement in `src/__tests__/lib/usage-limits.test.ts`
-
 ## Notes
-
-- Stripe API version: `2024-04-10` — pin explicitly in singleton
-- `getOrCreateStripeCustomer` must be idempotent: check DB first, only call `stripe.customers.create` if no existing ID
-- Upload guard reads `isPro` directly from DB (not session) to avoid stale session edge cases
-- `NEXT_PUBLIC_` prefix required for price IDs used in client components
-- No Stripe CLI or live webhook needed for Phase 1 — all testable with unit tests + seeded `.env.local`
-- Free tier limits: 50 items, 3 collections, no file upload
-- Session sync: always query DB for `isPro` in JWT callback (one extra query per validation) so Pro status is live after a page reload
-
-**Unit tests (6 cases):**
-- Free user with 49 items → success
-- Free user with 50 items → throws limit error
-- Pro user with 50+ items → success
-- Free user with 2 collections → success
-- Free user with 3 collections → throws limit error
-- Pro user with 3+ collections → success
 
 ## History
 
@@ -84,3 +57,4 @@ In Progress
 - **2026-05-06** — Completed Homepage Mockup: static marketing prototype at prototypes/homepage/ (index.html, styles.css, script.js); chaos-to-order hero with 8 animated floating icons (drift, bounce, mouse repulsion via requestAnimationFrame), pulsing arrow, dashboard preview mockup; fixed navbar with scroll opacity; gradient headline + CTA; 6-card features grid; AI section with code editor mockup and tag demo; pricing cards with Free/Pro and yearly billing toggle; scroll fade-in animations; fully responsive with mobile stacking and downward arrow
 - **2026-05-06** — Completed TopBar Mobile Improvement: removed fixed w-48 containers on left/right sections so search bar gets full remaining space on mobile; desktop layout unchanged (star icon, New Collection, New Item buttons); mobile collapses all right-side actions into a single + button dropdown (New Item, New Collection, Favorites) using Base UI DropdownMenu; Favorites item uses useRouter().push instead of asChild (not supported by Base UI Menu.Item)
 - **2026-05-06** — Completed Auth Pages Navbar + Logo Update: added homepage Navbar to /sign-in and /register pages (full-height column layout, form centered below nav); replaced ⚡ emoji in Navbar logo with Package icon using bg-primary to match dashboard TopBar; updated Features/Pricing anchor links to /#features and /#pricing so they navigate back to homepage from any page; added scrollbar-gutter: stable globally to prevent layout shift on short pages
+- **2026-05-11** — Completed Stripe Phase 1: installed stripe SDK; Stripe client singleton (apiVersion 2026-04-22.dahlia); getOrCreateStripeCustomer/createCheckoutSession/createPortalSession helpers; createCheckoutAction/getPortalSessionAction server actions; JWT callback syncs isPro from DB on every token validation; Session type extended with isPro; 50-item free-tier guard in createItem; 3-collection free-tier guard in createCollection; /api/upload returns 403 for free users (reads DB directly); STRIPE_SECRET_KEY/STRIPE_WEBHOOK_SECRET/STRIPE_PRICE_ID_MONTHLY/STRIPE_PRICE_ID_YEARLY added to .env.example; 6 unit tests for free-tier enforcement
