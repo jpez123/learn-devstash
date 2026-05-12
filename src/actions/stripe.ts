@@ -11,6 +11,14 @@ async function getOrigin(): Promise<string> {
   return `${proto}://${host}`;
 }
 
+export async function createCheckoutByInterval(interval: 'month' | 'year') {
+  const priceId =
+    interval === 'month'
+      ? process.env.STRIPE_PRICE_ID_MONTHLY ?? ''
+      : process.env.STRIPE_PRICE_ID_YEARLY ?? '';
+  return createCheckoutAction(priceId);
+}
+
 export async function createCheckoutAction(priceId: string) {
   const session = await auth();
   if (!session?.user?.id) return { error: 'Unauthorized' };
