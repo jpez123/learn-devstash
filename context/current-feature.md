@@ -1,12 +1,25 @@
-# Current Feature
+# Current Feature: Stripe Phase 2 — Webhooks, Feature Gating & Billing UI
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Create Stripe webhook handler at `src/app/api/webhooks/stripe/route.ts` with HMAC signature verification
+- Handle `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, and `invoice.payment_failed` events to sync `isPro` and `stripeSubscriptionId` in the DB
+- Build `BillingSection` client component (free: upgrade buttons for monthly/yearly; pro: manage billing portal button)
+- Integrate `BillingSection` into the settings page below `ChangePasswordForm` and above `DeleteAccountSection`
+
 ## Notes
+
+- Webhook route must use `req.text()` — never `req.json()` — raw body required for HMAC verification
+- `subscription.metadata.userId` must be set at checkout time via `subscription_data: { metadata: { userId } }` in `createCheckoutSession`; webhook handler depends on this to find the user
+- Stripe CLI signing secret (`whsec_...` from `stripe listen`) differs from Dashboard secret — use CLI secret for local dev
+- Price IDs come from env: `STRIPE_PRICE_ID_MONTHLY` and `STRIPE_PRICE_ID_YEARLY`
+- Both button states should disable and show loading during async calls; use `toast.error` for failures
+- Checkout success → `/settings?upgraded=true`, cancel → `/settings`, portal return → `/settings`
+- `router.push(url)` works correctly for external Stripe URLs in Next.js App Router
 
 ## History
 

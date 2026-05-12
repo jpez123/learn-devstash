@@ -36,9 +36,9 @@ export async function createCheckoutSession(
     customer: customerId,
     mode: 'subscription',
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${returnUrl}?checkout=success`,
-    cancel_url: `${returnUrl}?checkout=cancelled`,
-    metadata: { userId },
+    success_url: `${returnUrl}?upgraded=true`,
+    cancel_url: returnUrl,
+    subscription_data: { metadata: { userId } },
   });
 
   if (!session.url) throw new Error('Failed to create checkout session');
