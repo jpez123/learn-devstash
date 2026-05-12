@@ -17,9 +17,11 @@ export function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-6 ml-auto">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/#features" className="text-sm text-[#8b949e] hover:text-[#e6edf3] transition-colors">
             Features
           </a>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/#pricing" className="text-sm text-[#8b949e] hover:text-[#e6edf3] transition-colors">
             Pricing
           </a>

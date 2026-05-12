@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Plus, Package, Menu, Star, FolderPlus } from "lucide-react";
+import { Search, Plus, Package, Menu, Star, FolderPlus, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import { useSearch } from "@/context/SearchContext";
 import ItemCreateDialog from "@/components/items/ItemCreateDialog";
 import CollectionCreateDialog from "@/components/collections/CollectionCreateDialog";
 
-export default function TopBar() {
+export default function TopBar({ isPro }: { isPro: boolean }) {
   const { toggleMobile } = useSidebar();
   const { setOpen: openSearch } = useSearch();
   const router = useRouter();
@@ -60,6 +60,14 @@ export default function TopBar() {
         {/* Right: Actions — full on desktop, collapsed on mobile */}
         <div className="flex items-center gap-2 shrink-0">
           {/* Desktop actions */}
+          {!isPro && (
+            <Link href="/upgrade">
+              <Button size="sm" variant="ghost" className="hidden sm:flex text-muted-foreground hover:text-foreground gap-1">
+                <Zap className="h-3.5 w-3.5" />
+                Upgrade
+              </Button>
+            </Link>
+          )}
           <Link
             href="/favorites"
             className="hidden sm:flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
@@ -93,6 +101,12 @@ export default function TopBar() {
                 <Star className="h-4 w-4 mr-2" />
                 Favorites
               </DropdownMenuItem>
+              {!isPro && (
+                <DropdownMenuItem onClick={() => router.push('/upgrade')}>
+                  <Zap className="h-4 w-4 mr-2" />
+                  Upgrade
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -4,7 +4,6 @@ import { createContext, useContext, useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { updateEditorPreferences } from '@/actions/settings';
 import type { EditorPreferences } from '@/types/editor';
-import { DEFAULT_EDITOR_PREFERENCES } from '@/types/editor';
 
 interface EditorPreferencesContextValue {
   preferences: EditorPreferences;

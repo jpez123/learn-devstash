@@ -48,7 +48,7 @@ export default async function DashboardLayout({
         <ItemDrawerProvider>
           <SearchProvider data={searchData}>
             <div className="flex h-screen flex-col overflow-hidden">
-              <TopBar />
+              <TopBar isPro={session.user.isPro} />
               <div className="flex flex-1 overflow-hidden">
                 <Sidebar itemTypes={itemTypes} sidebarCollections={sidebarCollections} user={user} />
                 <main className="flex-1 overflow-y-auto p-6">{children}</main>

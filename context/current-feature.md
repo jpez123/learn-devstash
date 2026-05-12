@@ -2,11 +2,22 @@
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Free users see a subtle ghost "Upgrade" button in the TopBar (hidden for Pro users)
+- Clicking "Upgrade" goes to `/upgrade` page (not directly to Stripe checkout)
+- `/upgrade` page shows pricing similar to the homepage PricingSection with monthly ($8) and yearly ($72) options
+- User selects a plan and clicks to proceed through Stripe checkout
+- Ghost button style — more subtle than other nav buttons
+
 ## Notes
+
+- TopBar is a client component; pass `isPro` as a prop from dashboard layout (server component) 
+- Reuse `createCheckoutByInterval` server action from `src/actions/stripe.ts`
+- `/upgrade` page is inside `(dashboard)` layout so it's protected and has session access
+- Style the upgrade button as a ghost/outline variant that is visually quieter than "New Item" primary button
 
 ## History
 

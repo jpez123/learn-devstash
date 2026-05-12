@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getItemsByType } from '@/lib/db/items';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
@@ -7,7 +7,6 @@ import ImageCard from '@/components/items/ImageCard';
 import FileListRow from '@/components/items/FileListRow';
 import ItemsTypeHeader from '@/components/items/ItemsTypeHeader';
 import Pagination from '@/components/ui/Pagination';
-import ProUpgradeGate from '@/components/ui/ProUpgradeGate';
 
 const VALID_TYPE_SLUGS = ['snippets', 'prompts', 'commands', 'notes', 'files', 'images', 'links'];
 
@@ -36,15 +35,7 @@ export default async function ItemsTypePage({
 
   const PRO_ONLY_SLUGS = ['files', 'images'];
   if (PRO_ONLY_SLUGS.includes(type) && !session.user.isPro) {
-    const label = slugToLabel(type);
-    return (
-      <ProUpgradeGate
-        title={`${label} are a Pro feature`}
-        description={`Upgrade to Pro to upload and manage ${type.toLowerCase()} in DevStash.`}
-        monthlyPriceId={process.env.STRIPE_PRICE_ID_MONTHLY ?? ''}
-        yearlyPriceId={process.env.STRIPE_PRICE_ID_YEARLY ?? ''}
-      />
-    );
+    redirect('/upgrade');
   }
 
   const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
