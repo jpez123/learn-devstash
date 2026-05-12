@@ -7,6 +7,7 @@ import ImageCard from '@/components/items/ImageCard';
 import FileListRow from '@/components/items/FileListRow';
 import ItemsTypeHeader from '@/components/items/ItemsTypeHeader';
 import Pagination from '@/components/ui/Pagination';
+import ProUpgradeGate from '@/components/ui/ProUpgradeGate';
 
 const VALID_TYPE_SLUGS = ['snippets', 'prompts', 'commands', 'notes', 'files', 'images', 'links'];
 
@@ -32,6 +33,19 @@ export default async function ItemsTypePage({
 
   const session = await auth();
   if (!session?.user?.id) notFound();
+
+  const PRO_ONLY_SLUGS = ['files', 'images'];
+  if (PRO_ONLY_SLUGS.includes(type) && !session.user.isPro) {
+    const label = slugToLabel(type);
+    return (
+      <ProUpgradeGate
+        title={`${label} are a Pro feature`}
+        description={`Upgrade to Pro to upload and manage ${type.toLowerCase()} in DevStash.`}
+        monthlyPriceId={process.env.STRIPE_PRICE_ID_MONTHLY ?? ''}
+        yearlyPriceId={process.env.STRIPE_PRICE_ID_YEARLY ?? ''}
+      />
+    );
+  }
 
   const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
   const typeName = slugToTypeName(type);
