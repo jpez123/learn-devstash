@@ -1,12 +1,39 @@
-# Current Feature
+# Current Feature: Stripe Integration — Phase 1: Core Infrastructure
 
 ## Status
 
-Not Started
+In Progress
 
 ## Goals
 
+- Install `stripe` npm package and create client singleton (`src/lib/stripe.ts`)
+- Create helper utilities (`src/lib/stripe-util.ts`) — `getOrCreateStripeCustomer`, `createCheckoutSession`, `createPortalSession`
+- Create server actions (`src/actions/stripe.ts`) — `createCheckoutAction`, `getPortalSessionAction`
+- Update `src/auth.ts` JWT callback to always sync `isPro` from DB on every session validation
+- Extend `Session` type with `isPro: boolean` in `src/types/next-auth.d.ts`
+- Add 50-item free-tier guard to `createItem` in `src/lib/db/items.ts`
+- Add 3-collection free-tier guard to `createCollection` in `src/lib/db/collections.ts`
+- Add `isPro` guard to `src/app/api/upload/route.ts` (403 for free users)
+- Add Stripe env vars to `.env.example`
+- Unit tests for free-tier enforcement in `src/__tests__/lib/usage-limits.test.ts`
+
 ## Notes
+
+- Stripe API version: `2024-04-10` — pin explicitly in singleton
+- `getOrCreateStripeCustomer` must be idempotent: check DB first, only call `stripe.customers.create` if no existing ID
+- Upload guard reads `isPro` directly from DB (not session) to avoid stale session edge cases
+- `NEXT_PUBLIC_` prefix required for price IDs used in client components
+- No Stripe CLI or live webhook needed for Phase 1 — all testable with unit tests + seeded `.env.local`
+- Free tier limits: 50 items, 3 collections, no file upload
+- Session sync: always query DB for `isPro` in JWT callback (one extra query per validation) so Pro status is live after a page reload
+
+**Unit tests (6 cases):**
+- Free user with 49 items → success
+- Free user with 50 items → throws limit error
+- Pro user with 50+ items → success
+- Free user with 2 collections → success
+- Free user with 3 collections → throws limit error
+- Pro user with 3+ collections → success
 
 ## History
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { auth } from '@/auth';
 import { uploadToR2 } from '@/lib/r2';
+import { prisma } from '@/lib/prisma';
 
 const IMAGE_TYPES = new Set([
   'image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml',
@@ -19,6 +20,17 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { isPro: true },
+  });
+  if (!dbUser?.isPro) {
+    return NextResponse.json(
+      { error: 'File uploads require a Pro subscription' },
+      { status: 403 }
+    );
   }
 
   const formData = await req.formData();

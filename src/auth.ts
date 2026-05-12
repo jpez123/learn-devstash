@@ -12,12 +12,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token }) {
       if (token.sub) {
-        const user = await prisma.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
           where: { id: token.sub },
-          select: { passwordChangedAt: true },
+          select: { isPro: true, passwordChangedAt: true },
         });
-        if (user?.passwordChangedAt && token.iat) {
-          const changedAt = Math.floor(user.passwordChangedAt.getTime() / 1000);
+
+        token.isPro = dbUser?.isPro ?? false;
+
+        if (dbUser?.passwordChangedAt && token.iat) {
+          const changedAt = Math.floor(dbUser.passwordChangedAt.getTime() / 1000);
           if ((token.iat as number) < changedAt) return null;
         }
       }
@@ -27,6 +30,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token.sub) {
         session.user.id = token.sub;
       }
+      session.user.isPro = (token.isPro as boolean) ?? false;
       return session;
     },
   },

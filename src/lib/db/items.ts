@@ -16,6 +16,12 @@ export type CreateItemData = {
 };
 
 export async function createItem(userId: string, data: CreateItemData): Promise<ItemDetail> {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { isPro: true } });
+  if (!user?.isPro) {
+    const count = await prisma.item.count({ where: { userId } });
+    if (count >= 50) throw new Error('Free tier limit reached: 50 items. Upgrade to Pro for unlimited items.');
+  }
+
   const itemType = await prisma.itemType.findFirst({
     where: { name: data.typeName, isSystem: true },
   });
