@@ -11,7 +11,9 @@ import {
 } from '@/lib/db/collections';
 import type { CollectionDetail, CollectionSummary } from '@/lib/db/collections';
 
-type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
+type ActionResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: string; code?: string };
 
 const createCollectionSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
@@ -35,7 +37,10 @@ export async function createCollection(formData: {
   try {
     const collection = await createCollectionDb(session.user.id, parsed.data);
     return { success: true, data: collection };
-  } catch {
+  } catch (e) {
+    if (e instanceof Error && e.message.startsWith('Free tier limit reached')) {
+      return { success: false, error: e.message, code: 'FREE_TIER_LIMIT' };
+    }
     return { success: false, error: 'Failed to create collection' };
   }
 }
