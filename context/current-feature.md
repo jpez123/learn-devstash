@@ -1,25 +1,12 @@
-# Current Feature: Stripe Phase 2 — Webhooks, Feature Gating & Billing UI
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create Stripe webhook handler at `src/app/api/webhooks/stripe/route.ts` with HMAC signature verification
-- Handle `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, and `invoice.payment_failed` events to sync `isPro` and `stripeSubscriptionId` in the DB
-- Build `BillingSection` client component (free: upgrade buttons for monthly/yearly; pro: manage billing portal button)
-- Integrate `BillingSection` into the settings page below `ChangePasswordForm` and above `DeleteAccountSection`
-
 ## Notes
-
-- Webhook route must use `req.text()` — never `req.json()` — raw body required for HMAC verification
-- `subscription.metadata.userId` must be set at checkout time via `subscription_data: { metadata: { userId } }` in `createCheckoutSession`; webhook handler depends on this to find the user
-- Stripe CLI signing secret (`whsec_...` from `stripe listen`) differs from Dashboard secret — use CLI secret for local dev
-- Price IDs come from env: `STRIPE_PRICE_ID_MONTHLY` and `STRIPE_PRICE_ID_YEARLY`
-- Both button states should disable and show loading during async calls; use `toast.error` for failures
-- Checkout success → `/settings?upgraded=true`, cancel → `/settings`, portal return → `/settings`
-- `router.push(url)` works correctly for external Stripe URLs in Next.js App Router
 
 ## History
 
@@ -71,3 +58,4 @@ In Progress
 - **2026-05-06** — Completed TopBar Mobile Improvement: removed fixed w-48 containers on left/right sections so search bar gets full remaining space on mobile; desktop layout unchanged (star icon, New Collection, New Item buttons); mobile collapses all right-side actions into a single + button dropdown (New Item, New Collection, Favorites) using Base UI DropdownMenu; Favorites item uses useRouter().push instead of asChild (not supported by Base UI Menu.Item)
 - **2026-05-06** — Completed Auth Pages Navbar + Logo Update: added homepage Navbar to /sign-in and /register pages (full-height column layout, form centered below nav); replaced ⚡ emoji in Navbar logo with Package icon using bg-primary to match dashboard TopBar; updated Features/Pricing anchor links to /#features and /#pricing so they navigate back to homepage from any page; added scrollbar-gutter: stable globally to prevent layout shift on short pages
 - **2026-05-11** — Completed Stripe Phase 1: installed stripe SDK; Stripe client singleton (apiVersion 2026-04-22.dahlia); getOrCreateStripeCustomer/createCheckoutSession/createPortalSession helpers; createCheckoutAction/getPortalSessionAction server actions; JWT callback syncs isPro from DB on every token validation; Session type extended with isPro; 50-item free-tier guard in createItem; 3-collection free-tier guard in createCollection; /api/upload returns 403 for free users (reads DB directly); STRIPE_SECRET_KEY/STRIPE_WEBHOOK_SECRET/STRIPE_PRICE_ID_MONTHLY/STRIPE_PRICE_ID_YEARLY added to .env.example; 6 unit tests for free-tier enforcement
+- **2026-05-11** — Completed Stripe Phase 2: POST /api/webhooks/stripe with HMAC signature verification; handles customer.subscription.created (isPro=true), customer.subscription.updated (isPro by status), customer.subscription.deleted (isPro=false + clear subscriptionId), invoice.payment_failed (log only); fixed createCheckoutSession to pass subscription_data.metadata.userId so webhook can look up user; BillingSection client component on /settings showing free upgrade buttons (Monthly $8/mo, Yearly $72/yr) or Pro "Manage Billing" portal button with plan badge; 9 unit tests for webhook handler
